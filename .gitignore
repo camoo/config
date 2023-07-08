@@ -2,7 +2,7 @@ vendor
 composer.lock
 build
 node_modules
-
+phpunit.xml
 # Ignore files from PHPStorm
 .idea
 

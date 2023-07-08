@@ -7,19 +7,13 @@ use PHPUnit\Framework\TestCase;
 
 class YamlTest extends TestCase
 {
-    /**
-     * @var Yaml
-     */
+    /** @var Yaml */
     protected $writer;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $temp_file;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $data;
 
     /**
@@ -45,18 +39,7 @@ class YamlTest extends TestCase
         ];
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tear_down()
-    {
-        unlink($this->temp_file);
-    }
-
-    /**
-     * @covers \Noodlehaus\Writer\Yaml::getSupportedExtensions()
-     */
+    /** @covers \Noodlehaus\Writer\Yaml::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
         $expected = ['yaml'];
@@ -64,9 +47,7 @@ class YamlTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @covers \Noodlehaus\Writer\Yaml::toString()
-     */
+    /** @covers \Noodlehaus\Writer\Yaml::toString() */
     public function testEncodeYaml()
     {
         $actual = $this->writer->toString($this->data);
@@ -93,7 +74,7 @@ EOD;
     {
         $this->writer->toFile($this->data, $this->temp_file);
         $this->assertFileExists($this->temp_file);
-        $this->assertFileEquals($this->temp_file, __DIR__.'/../mocks/pass/config4.yaml');
+        $this->assertFileEquals($this->temp_file, __DIR__ . '/../mocks/pass/config4.yaml');
     }
 
     /**
@@ -107,5 +88,14 @@ EOD;
         chmod($this->temp_file, 0444);
 
         $this->writer->toFile($this->data, $this->temp_file);
+    }
+
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tear_down()
+    {
+        unlink($this->temp_file);
     }
 }

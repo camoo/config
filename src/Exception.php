@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Noodlehaus;
 
-class Exception extends \Exception
+use RuntimeException;
+
+class Exception extends RuntimeException
 {
 }

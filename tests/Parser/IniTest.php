@@ -10,9 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class IniTest extends TestCase
 {
-    /**
-     * @var Ini
-     */
+    /** @var Ini */
     protected $ini;
 
     /**
@@ -24,13 +22,11 @@ class IniTest extends TestCase
         $this->ini = new Ini();
     }
 
-    /**
-     * @covers \Noodlehaus\Parser\Ini::getSupportedExtensions()
-     */
+    /** @covers \Noodlehaus\Parser\Ini::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
         $expected = ['ini'];
-        $actual   = $this->ini->getSupportedExtensions();
+        $actual = $this->ini->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
@@ -61,7 +57,7 @@ class IniTest extends TestCase
 
         $this->expectException(\Noodlehaus\Exception\ParseException::class);
         $this->expectExceptionMessage($exceptionMessage);
-        
+
         $this->ini->parseString(file_get_contents(__DIR__ . '/../mocks/fail/error.ini'));
     }
 

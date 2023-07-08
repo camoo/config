@@ -7,19 +7,13 @@ use PHPUnit\Framework\TestCase;
 
 class IniTest extends TestCase
 {
-    /**
-     * @var Ini
-     */
+    /** @var Ini */
     protected $writer;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $temp_file;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $data;
 
     /**
@@ -42,18 +36,7 @@ class IniTest extends TestCase
         ];
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tear_down()
-    {
-        unlink($this->temp_file);
-    }
-
-    /**
-     * @covers \Noodlehaus\Writer\Ini::getSupportedExtensions()
-     */
+    /** @covers \Noodlehaus\Writer\Ini::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
         $expected = ['ini'];
@@ -90,7 +73,7 @@ EOD;
         $this->writer->toFile($this->data, $this->temp_file);
 
         $this->assertFileExists($this->temp_file);
-        $this->assertFileEquals($this->temp_file, __DIR__.'/../mocks/pass/config4.ini');
+        $this->assertFileEquals($this->temp_file, __DIR__ . '/../mocks/pass/config4.ini');
     }
 
     /**
@@ -105,5 +88,14 @@ EOD;
         chmod($this->temp_file, 0444);
 
         $this->writer->toFile($this->data, $this->temp_file);
+    }
+
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tear_down()
+    {
+        unlink($this->temp_file);
     }
 }

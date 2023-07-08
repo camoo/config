@@ -7,9 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class PropertiesTest extends TestCase
 {
-    /**
-     * @var Properties
-     */
+    /** @var Properties */
     protected $properties;
 
     /**
@@ -21,9 +19,7 @@ class PropertiesTest extends TestCase
         $this->properties = new Properties();
     }
 
-    /**
-     * @covers \Noodlehaus\Parser\Properties::getSupportedExtensions()
-     */
+    /** @covers \Noodlehaus\Parser\Properties::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
         $expected = ['properties'];
@@ -38,7 +34,7 @@ class PropertiesTest extends TestCase
      */
     public function testLoadProperties()
     {
-        $config = $this->properties->parseFile(__DIR__.'/../mocks/pass/config.properties');
+        $config = $this->properties->parseFile(__DIR__ . '/../mocks/pass/config.properties');
 
         $this->assertSame('https://en.wikipedia.org/', @$config['website']);
         $this->assertSame('English', @$config['language']);
@@ -55,7 +51,7 @@ class PropertiesTest extends TestCase
      */
     public function testLoadInvalidIniGBH()
     {
-        $config = $this->properties->parseFile(__DIR__.'/../mocks/fail/error.properties');
+        $config = $this->properties->parseFile(__DIR__ . '/../mocks/fail/error.properties');
 
         $this->assertEmpty($config);
     }

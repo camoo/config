@@ -7,19 +7,13 @@ use PHPUnit\Framework\TestCase;
 
 class XmlTest extends TestCase
 {
-    /**
-     * @var Xml
-     */
+    /** @var Xml */
     protected $writer;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $temp_file;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $data;
 
     /**
@@ -45,18 +39,7 @@ class XmlTest extends TestCase
         ];
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tear_down()
-    {
-        // unlink($this->temp_file);
-    }
-
-    /**
-     * @covers \Noodlehaus\Writer\Xml::getSupportedExtensions()
-     */
+    /** @covers \Noodlehaus\Writer\Xml::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
         $expected = ['xml'];
@@ -89,7 +72,7 @@ EOD;
         $this->writer->toFile($this->data, $this->temp_file);
 
         $this->assertFileExists($this->temp_file);
-        $this->assertFileEquals($this->temp_file, __DIR__.'/../mocks/pass/config4.xml');
+        $this->assertFileEquals($this->temp_file, __DIR__ . '/../mocks/pass/config4.xml');
     }
 
     /**
@@ -103,5 +86,14 @@ EOD;
         chmod($this->temp_file, 0444);
 
         $this->writer->toFile($this->data, $this->temp_file);
+    }
+
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tear_down()
+    {
+        // unlink($this->temp_file);
     }
 }

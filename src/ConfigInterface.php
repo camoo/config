@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Noodlehaus;
 
 /**
  * Config interface
  *
- * @package    Config
  * @author     Jesus A. Domingo <jesus.domingo@gmail.com>
  * @author     Hassan Khan <contact@hassankhan.me>
+ *
  * @link       https://github.com/noodlehaus/config
+ *
  * @license    MIT
  */
 interface ConfigInterface
@@ -18,38 +21,24 @@ interface ConfigInterface
      * Nested keys are similar to JSON paths that use the dot
      * dot notation.
      *
-     * @param  string $key
-     * @param  mixed  $default
-     *
-     * @return mixed
+     * @param mixed $default
      */
-    public function get($key, $default = null);
+    public function get(string $key, mixed $default = null);
 
     /**
      * Function for setting configuration values, using
      * either simple or nested keys.
-     *
-     * @param  string $key
-     * @param  mixed  $value
-     *
-     * @return void
      */
-    public function set($key, $value);
+    public function set(string $key, mixed $value): void;
 
     /**
      * Function for checking if configuration values exist, using
      * either simple or nested keys.
-     *
-     * @param  string $key
-     *
-     * @return boolean
      */
-    public function has($key);
-    
+    public function has(string $key): bool;
+
     /**
      * Get all of the configuration items
-     *
-     * @return array
      */
-    public function all();
+    public function all(): array;
 }

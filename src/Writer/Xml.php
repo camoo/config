@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Noodlehaus\Writer;
 
 use DOMDocument;
@@ -8,12 +10,13 @@ use SimpleXMLElement;
 /**
  * Xml Writer.
  *
- * @package    Config
  * @author     Jesus A. Domingo <jesus.domingo@gmail.com>
  * @author     Hassan Khan <contact@hassankhan.me>
  * @author     Filip Š <projects@filips.si>
  * @author     Mark de Groot <mail@markdegroot.nl>
+ *
  * @link       https://github.com/noodlehaus/config
+ *
  * @license    MIT
  */
 class Xml extends AbstractWriter
@@ -22,10 +25,10 @@ class Xml extends AbstractWriter
      * {@inheritdoc}
      * Writes an array to a Xml string.
      */
-    public function toString($config, $pretty = true)
+    public function toString(array $config, bool $pretty = true): string
     {
         $xml = $this->toXML($config);
-        if ($pretty == false) {
+        if (!$pretty) {
             return $xml;
         }
 
@@ -37,25 +40,24 @@ class Xml extends AbstractWriter
         return $dom->saveXML();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSupportedExtensions()
+    /** {@inheritdoc} */
+    public static function getSupportedExtensions(): array
     {
         return ['xml'];
     }
 
     /**
      * Converts array to XML string.
-     * @param array             $arr       Array to be converted
-     * @param string            $rootElement I specified will be taken as root element
-     * @param SimpleXMLElement  $xml         If specified content will be appended
+     *
+     * @param array            $arr         Array to be converted
+     * @param string           $rootElement I specified will be taken as root element
+     * @param SimpleXMLElement $xml         If specified content will be appended
      *
      * @return string Converted array as XML
      *
      * @see https://www.kerstner.at/2011/12/php-array-to-xml-conversion/
      */
-    protected function toXML(array $arr, $rootElement = '<config/>', $xml = null)
+    protected function toXML(array $arr, string $rootElement = '<config/>', ?SimpleXMLElement $xml = null)
     {
         if ($xml === null) {
             $xml = new SimpleXMLElement($rootElement);
@@ -64,7 +66,7 @@ class Xml extends AbstractWriter
             if (is_array($v)) {
                 $this->toXML($v, $k, $xml->addChild($k));
             } else {
-                $xml->addChild($k, $v);
+                $xml->addChild((string)$k, (string)$v);
             }
         }
 

@@ -7,19 +7,13 @@ use PHPUnit\Framework\TestCase;
 
 class JsonTest extends TestCase
 {
-    /**
-     * @var Json
-     */
+    /** @var Json */
     protected $writer;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $temp_file;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $data;
 
     /**
@@ -45,18 +39,7 @@ class JsonTest extends TestCase
         ];
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tear_down()
-    {
-        unlink($this->temp_file);
-    }
-
-    /**
-     * @covers \Noodlehaus\Writer\Json::getSupportedExtensions()
-     */
+    /** @covers \Noodlehaus\Writer\Json::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
         $expected = ['json'];
@@ -64,9 +47,7 @@ class JsonTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @covers \Noodlehaus\Writer\Json::toString()
-     */
+    /** @covers \Noodlehaus\Writer\Json::toString() */
     public function testEncodeJson()
     {
         $actual = $this->writer->toString($this->data, false);
@@ -84,7 +65,7 @@ class JsonTest extends TestCase
         $this->writer->toFile($this->data, $this->temp_file);
 
         $this->assertFileExists($this->temp_file);
-        $this->assertFileEquals($this->temp_file, __DIR__.'/../mocks/pass/config4.json');
+        $this->assertFileEquals($this->temp_file, __DIR__ . '/../mocks/pass/config4.json');
     }
 
     /**
@@ -98,5 +79,14 @@ class JsonTest extends TestCase
         chmod($this->temp_file, 0444);
 
         $this->writer->toFile($this->data, $this->temp_file);
+    }
+
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tear_down()
+    {
+        unlink($this->temp_file);
     }
 }

@@ -10,9 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class JsonTest extends TestCase
 {
-    /**
-     * @var Json
-     */
+    /** @var Json */
     protected $json;
 
     /**
@@ -24,13 +22,11 @@ class JsonTest extends TestCase
         $this->json = new Json();
     }
 
-    /**
-     * @covers \Noodlehaus\Parser\Json::getSupportedExtensions()
-     */
+    /** @covers \Noodlehaus\Parser\Json::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
         $expected = ['json'];
-        $actual   = $this->json->getSupportedExtensions();
+        $actual = $this->json->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 

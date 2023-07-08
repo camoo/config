@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Noodlehaus;
 
 use ArrayAccess;
@@ -8,59 +10,33 @@ use Iterator;
 /**
  * Abstract Config class
  *
- * @package    Config
  * @author     Jesus A. Domingo <jesus.domingo@gmail.com>
  * @author     Hassan Khan <contact@hassankhan.me>
+ *
  * @link       https://github.com/noodlehaus/config
+ *
  * @license    MIT
  */
 abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
 {
-    /**
-     * Stores the configuration data
-     *
-     * @var array|null
-     */
-    protected $data = null;
+    /** Stores the configuration data */
+    protected ?array $data = null;
 
-    /**
-     * Caches the configuration data
-     *
-     * @var array
-     */
-    protected $cache = [];
+    /** Caches the configuration data */
+    protected array $cache = [];
 
-    /**
-     * Constructor method and sets default options, if any
-     *
-     * @param array $data
-     */
+    /** Constructor method and sets default options, if any */
     public function __construct(array $data)
     {
         $this->data = array_merge($this->getDefaults(), $data);
     }
 
     /**
-     * Override this method in your own subclass to provide an array of default
-     * options and values
-     *
-     * @return array
-     *
-     * @codeCoverageIgnore
-     */
-    protected function getDefaults()
-    {
-        return [];
-    }
-
-    /**
      * ConfigInterface Methods
      */
 
-    /**
-     * {@inheritDoc}
-     */
-    public function get($key, $default = null)
+    /** {@inheritDoc} */
+    public function get(string $key, mixed $default = null)
     {
         if ($this->has($key)) {
             return $this->cache[$key];
@@ -69,10 +45,8 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
         return $default;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function set($key, $value)
+    /** {@inheritDoc} */
+    public function set(string $key, mixed $value): void
     {
         $segs = explode('.', $key);
         $root = &$this->data;
@@ -97,7 +71,7 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
             //Unset all old nested cache in case of array
             if (count($segs) == 0) {
                 foreach ($this->cache as $cacheLocalKey => $cacheValue) {
-                    if (substr($cacheLocalKey, 0, strlen($cacheKey)) === $cacheKey) {
+                    if (str_starts_with($cacheLocalKey, $cacheKey)) {
                         unset($this->cache[$cacheLocalKey]);
                     }
                 }
@@ -108,10 +82,8 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
         $this->cache[$key] = $root = $value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function has($key)
+    /** {@inheritDoc} */
+    public function has(string $key): bool
     {
         // Check if already cached
         if (isset($this->cache[$key])) {
@@ -125,7 +97,6 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
         foreach ($segments as $segment) {
             if (array_key_exists($segment, $root)) {
                 $root = $root[$segment];
-                continue;
             } else {
                 return false;
             }
@@ -139,21 +110,17 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
 
     /**
      * Merge config from another instance
-     *
-     * @param ConfigInterface $config
-     * @return ConfigInterface
      */
-    public function merge(ConfigInterface $config)
+    public function merge(ConfigInterface $config): self
     {
         $this->data = array_replace_recursive($this->data, $config->all());
         $this->cache = [];
+
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function all()
+    /** {@inheritDoc} */
+    public function all(): array
     {
         return $this->data;
     }
@@ -165,12 +132,9 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
     /**
      * Gets a value using the offset as a key
      *
-     * @param  string $offset
-     *
-     * @return mixed
+     * @param string $offset
      */
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->get($offset);
     }
@@ -178,12 +142,9 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
     /**
      * Checks if a key exists
      *
-     * @param  string $offset
-     *
-     * @return bool
+     * @param string $offset
      */
-    #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return $this->has($offset);
     }
@@ -191,13 +152,9 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
     /**
      * Sets a value using the offset as a key
      *
-     * @param  string $offset
-     * @param  mixed  $value
-     *
-     * @return void
+     * @param string $offset
      */
-    #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->set($offset, $value);
     }
@@ -205,12 +162,9 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
     /**
      * Deletes a key and its value
      *
-     * @param  string $offset
-     *
-     * @return void
+     * @param string $offset
      */
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         $this->set($offset, null);
     }
@@ -223,55 +177,57 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
      * Returns the data array element referenced by its internal cursor
      *
      * @return mixed The element referenced by the data array's internal cursor.
-     *     If the array is empty or there is no element at the cursor, the
-     *     function returns false. If the array is undefined, the function
-     *     returns null
+     *               If the array is empty or there is no element at the cursor, the
+     *               function returns false. If the array is undefined, the function
+     *               returns null
      */
-    #[\ReturnTypeWillChange]
-    public function current()
+    public function current(): mixed
     {
-        return (is_array($this->data) ? current($this->data) : null);
+        return is_array($this->data) ? current($this->data) : null;
     }
 
     /**
      * Returns the data array index referenced by its internal cursor
      *
      * @return mixed The index referenced by the data array's internal cursor.
-     *     If the array is empty or undefined or there is no element at the
-     *     cursor, the function returns null
+     *               If the array is empty or undefined or there is no element at the
+     *               cursor, the function returns null
      */
-    #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): mixed
     {
-        return (is_array($this->data) ? key($this->data) : null);
+        return is_array($this->data) ? key($this->data) : null;
     }
 
     /**
      * Moves the data array's internal cursor forward one element
      *
      * @return mixed The element referenced by the data array's internal cursor
-     *     after the move is completed. If there are no more elements in the
-     *     array after the move, the function returns false. If the data array
-     *     is undefined, the function returns null
+     *               after the move is completed. If there are no more elements in the
+     *               array after the move, the function returns false. If the data array
+     *               is undefined, the function returns null
      */
-    #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
-        return (is_array($this->data) ? next($this->data) : null);
+        if (!is_array($this->data)) {
+            return;
+        }
+        next($this->data);
     }
 
     /**
      * Moves the data array's internal cursor to the first element
      *
      * @return mixed The element referenced by the data array's internal cursor
-     *     after the move is completed. If the data array is empty, the function
-     *     returns false. If the data array is undefined, the function returns
-     *     null
+     *               after the move is completed. If the data array is empty, the function
+     *               returns false. If the data array is undefined, the function returns
+     *               null
      */
-    #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
-        return (is_array($this->data) ? reset($this->data) : null);
+        if (!is_array($this->data)) {
+            return;
+        }
+        reset($this->data);
     }
 
     /**
@@ -279,21 +235,25 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
      *
      * @return bool True if the current index is valid; false otherwise
      */
-    #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
-        return (is_array($this->data) ? key($this->data) !== null : false);
+        return is_array($this->data) && key($this->data) !== null;
+    }
+
+    /** Remove a value using the offset as a key */
+    public function remove(string $key): void
+    {
+        $this->offsetUnset($key);
     }
 
     /**
-     * Remove a value using the offset as a key
+     * Override this method in your own subclass to provide an array of default
+     * options and values
      *
-     * @param  string $key
-     *
-     * @return void
+     * @codeCoverageIgnore
      */
-    public function remove($key)
+    protected function getDefaults(): array
     {
-        $this->offsetUnset($key);
+        return [];
     }
 }

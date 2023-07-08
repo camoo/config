@@ -7,19 +7,13 @@ use PHPUnit\Framework\TestCase;
 
 class PropertiesTest extends TestCase
 {
-    /**
-     * @var Properties
-     */
+    /** @var Properties */
     protected $writer;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $temp_file;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $data;
 
     /**
@@ -41,18 +35,7 @@ class PropertiesTest extends TestCase
         ];
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tear_down()
-    {
-        unlink($this->temp_file);
-    }
-
-    /**
-     * @covers \Noodlehaus\Writer\Properties::getSupportedExtensions()
-     */
+    /** @covers \Noodlehaus\Writer\Properties::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
         $expected = ['properties'];
@@ -91,7 +74,7 @@ EOD;
         $this->writer->toFile($this->data, $this->temp_file);
 
         $this->assertFileExists($this->temp_file);
-        $this->assertFileEquals(__DIR__.'/../mocks/pass/config1.properties', $this->temp_file);
+        $this->assertFileEquals(__DIR__ . '/../mocks/pass/config1.properties', $this->temp_file);
     }
 
     /**
@@ -106,5 +89,14 @@ EOD;
         chmod($this->temp_file, 0444);
 
         $this->writer->toFile($this->data, $this->temp_file);
+    }
+
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tear_down()
+    {
+        unlink($this->temp_file);
     }
 }

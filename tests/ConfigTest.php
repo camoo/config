@@ -4,6 +4,7 @@ namespace Noodlehaus\Test;
 
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json as JsonParser;
+use Noodlehaus\Parser\Php;
 use Noodlehaus\Writer\Json as JsonWriter;
 use PHPUnit\Framework\TestCase;
 
@@ -12,9 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ConfigTest extends TestCase
 {
-    /**
-     * @var Config
-     */
+    /** @var Config */
     protected $config;
 
     /**
@@ -82,7 +81,7 @@ class ConfigTest extends TestCase
         $config = new Config($paths);
 
         $expected = 'localhost';
-        $actual   = $config->get('host');
+        $actual = $config->get('host');
 
         $this->assertSame($expected, $actual);
     }
@@ -101,7 +100,7 @@ class ConfigTest extends TestCase
         $config = new Config($paths);
 
         $expected = 'localhost';
-        $actual   = $config->get('host');
+        $actual = $config->get('host');
 
         $this->assertSame($expected, $actual);
     }
@@ -119,7 +118,7 @@ class ConfigTest extends TestCase
         $config = new Config($paths);
 
         $expected = 'localhost';
-        $actual   = $config->get('host');
+        $actual = $config->get('host');
 
         $this->assertSame($expected, $actual);
     }
@@ -137,7 +136,7 @@ class ConfigTest extends TestCase
         $config = new Config($paths);
 
         $expected = 'localhost';
-        $actual   = $config->get('host');
+        $actual = $config->get('host');
 
         $this->assertSame($expected, $actual);
     }
@@ -154,7 +153,7 @@ class ConfigTest extends TestCase
         $config = new Config(__DIR__ . '/mocks/dir');
 
         $expected = 'localhost';
-        $actual   = $config->get('host');
+        $actual = $config->get('host');
 
         $this->assertSame($expected, $actual);
     }
@@ -171,7 +170,7 @@ class ConfigTest extends TestCase
         $config = new Config(__DIR__ . '/mocks/pass/config.yml');
 
         $expected = 'localhost';
-        $actual   = $config->get('host');
+        $actual = $config->get('host');
 
         $this->assertSame($expected, $actual);
     }
@@ -188,7 +187,7 @@ class ConfigTest extends TestCase
         $config = new Config(__DIR__ . '/mocks/pass/config.yml.dist');
 
         $expected = 'localhost';
-        $actual   = $config->get('host');
+        $actual = $config->get('host');
 
         $this->assertSame($expected, $actual);
     }
@@ -205,7 +204,7 @@ class ConfigTest extends TestCase
         $config = new Config(__DIR__ . '/mocks/pass/empty.yaml');
 
         $expected = [];
-        $actual   = $config->all();
+        $actual = $config->all();
 
         $this->assertSame($expected, $actual);
     }
@@ -221,7 +220,7 @@ class ConfigTest extends TestCase
         $config = new Config(__DIR__ . '/mocks/pass/json.config', new JsonParser());
 
         $expected = 'localhost';
-        $actual   = $config->get('host');
+        $actual = $config->get('host');
 
         $this->assertSame($expected, $actual);
     }
@@ -233,10 +232,10 @@ class ConfigTest extends TestCase
     public function testConstructWithStringParser()
     {
         $settings = file_get_contents(__DIR__ . '/mocks/pass/config.php');
-        $config = new Config($settings, new \Noodlehaus\Parser\Php, true);
+        $config = new Config($settings, new Php(), true);
 
         $expected = 'localhost';
-        $actual   = $config->get('host');
+        $actual = $config->get('host');
 
         $this->assertSame($expected, $actual);
     }
@@ -244,6 +243,7 @@ class ConfigTest extends TestCase
     /**
      * @covers Config::__construct()
      * @covers Config::get()
+     *
      * @dataProvider specialConfigProvider()
      */
     public function testGetReturnsArrayMergedArray($config)
@@ -258,16 +258,14 @@ class ConfigTest extends TestCase
     public function testWritesToFile()
     {
         $config = new Config(json_encode(['foo' => 'bar']), new JsonParser(), true);
-        $filename = tempnam(sys_get_temp_dir(), 'config').'.json';
+        $filename = tempnam(sys_get_temp_dir(), 'config') . '.json';
 
         $config->toFile($filename);
 
         $this->assertFileExists($filename);
     }
 
-    /**
-     * @covers Config::toString()
-     */
+    /** @covers Config::toString() */
     public function testWritesToString()
     {
         $config = new Config(json_encode(['foo' => 'bar']), new JsonParser(), true);
@@ -277,9 +275,7 @@ class ConfigTest extends TestCase
         $this->assertNotEmpty($string);
     }
 
-    /**
-     * Provides names of example configuration files
-     */
+    /** Provides names of example configuration files */
     public function configProvider()
     {
         return array_merge(
@@ -289,14 +285,12 @@ class ConfigTest extends TestCase
                 [new Config(__DIR__ . '/mocks/pass/config.json')],
                 [new Config(__DIR__ . '/mocks/pass/config.php')],
                 [new Config(__DIR__ . '/mocks/pass/config.xml')],
-                [new Config(__DIR__ . '/mocks/pass/config.yaml')]
+                [new Config(__DIR__ . '/mocks/pass/config.yaml')],
             ]
         );
     }
 
-    /**
-     * Provides names of example configuration files (for array and directory)
-     */
+    /** Provides names of example configuration files (for array and directory) */
     public function specialConfigProvider()
     {
         return [
@@ -304,11 +298,11 @@ class ConfigTest extends TestCase
                 new Config(
                     [
                         __DIR__ . '/mocks/pass/config2.json',
-                        __DIR__ . '/mocks/pass/config.yaml'
+                        __DIR__ . '/mocks/pass/config.yaml',
                     ]
                 ),
-                new Config(__DIR__ . '/mocks/dir/')
-            ]
+                new Config(__DIR__ . '/mocks/dir/'),
+            ],
         ];
     }
 }

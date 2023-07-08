@@ -10,9 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class PhpTest extends TestCase
 {
-    /**
-     * @var Php
-     */
+    /** @var Php */
     protected $php;
 
     /**
@@ -24,13 +22,11 @@ class PhpTest extends TestCase
         $this->php = new Php();
     }
 
-    /**
-     * @covers \Noodlehaus\Parser\Php::getSupportedExtensions()
-     */
+    /** @covers \Noodlehaus\Parser\Php::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
         $expected = ['php'];
-        $actual   = $this->php->getSupportedExtensions();
+        $actual = $this->php->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
@@ -42,12 +38,10 @@ class PhpTest extends TestCase
     {
         $this->expectException(\Noodlehaus\Exception\UnsupportedFormatException::class);
         $this->expectExceptionMessage('PHP data does not return an array');
-        $this->php->parseFile(__DIR__ . '/../mocks/fail/error.php');
+        $this->php->parseFile(__DIR__ . '/../mocks/fail/null.php');
     }
 
-    /**
-     * @covers \Noodlehaus\Parser\Php::parseFile()
-     */
+    /** @covers \Noodlehaus\Parser\Php::parseFile() */
     public function testLoadExceptionalPhpFile()
     {
         $this->expectException(\Noodlehaus\Exception\ParseException::class);

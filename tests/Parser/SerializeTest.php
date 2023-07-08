@@ -10,9 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class SerializeTest extends TestCase
 {
-    /**
-     * @var Serialize
-     */
+    /** @var Serialize */
     protected $serialize;
 
     /**
@@ -24,13 +22,11 @@ class SerializeTest extends TestCase
         $this->serialize = new Serialize();
     }
 
-    /**
-     * @covers \Noodlehaus\Parser\Serialize::getSupportedExtensions()
-     */
+    /** @covers \Noodlehaus\Parser\Serialize::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
         $expected = ['txt'];
-        $actual   = $this->serialize->getSupportedExtensions();
+        $actual = $this->serialize->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 

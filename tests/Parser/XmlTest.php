@@ -10,9 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class XmlTest extends TestCase
 {
-    /**
-     * @var Xml
-     */
+    /** @var Xml */
     protected $xml;
 
     /**
@@ -24,13 +22,11 @@ class XmlTest extends TestCase
         $this->xml = new Xml();
     }
 
-    /**
-     * @covers \Noodlehaus\Parser\Xml::getSupportedExtensions()
-     */
+    /** @covers \Noodlehaus\Parser\Xml::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
         $expected = ['xml'];
-        $actual   = $this->xml->getSupportedExtensions();
+        $actual = $this->xml->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 

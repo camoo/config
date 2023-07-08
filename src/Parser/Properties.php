@@ -1,16 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Noodlehaus\Parser;
 
 /**
  * Properties parser.
  *
- * @package    Config
  * @author     Jesus A. Domingo <jesus.domingo@gmail.com>
  * @author     Hassan Khan <contact@hassankhan.me>
  * @author     Filip Š <projects@filips.si>
  * @author     Mark de Groot <mail@markdegroot.nl>
+ *
  * @link       https://github.com/noodlehaus/config
+ *
  * @license    MIT
  */
 class Properties implements ParserInterface
@@ -19,7 +22,7 @@ class Properties implements ParserInterface
      * {@inheritdoc}
      * Parses a Properties file as an array.
      */
-    public function parseFile($filename)
+    public function parseFile(string $filename): ?array
     {
         return $this->parse(file_get_contents($filename));
     }
@@ -28,12 +31,18 @@ class Properties implements ParserInterface
      * {@inheritdoc}
      * Parses a Properties string as an array.
      */
-    public function parseString($config)
+    public function parseString(string $config): ?array
     {
         return $this->parse($config);
     }
 
-    private function parse($txtProperties)
+    /** {@inheritdoc} */
+    public static function getSupportedExtensions(): array
+    {
+        return ['properties'];
+    }
+
+    private function parse(string $txtProperties): array
     {
         $result = [];
 
@@ -48,13 +57,5 @@ class Properties implements ParserInterface
         }
 
         return $result;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSupportedExtensions()
-    {
-        return ['properties'];
     }
 }

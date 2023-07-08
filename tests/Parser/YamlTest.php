@@ -10,9 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class YamlTest extends TestCase
 {
-    /**
-     * @var Yaml
-     */
+    /** @var Yaml */
     protected $yaml;
 
     /**
@@ -24,13 +22,11 @@ class YamlTest extends TestCase
         $this->yaml = new Yaml();
     }
 
-    /**
-     * @covers \Noodlehaus\Parser\Yaml::getSupportedExtensions()
-     */
+    /** @covers \Noodlehaus\Parser\Yaml::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
         $expected = ['yaml', 'yml'];
-        $actual   = $this->yaml->getSupportedExtensions();
+        $actual = $this->yaml->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
@@ -67,9 +63,7 @@ class YamlTest extends TestCase
         $this->assertSame(80, $actual['port']);
     }
 
-    /**
-     * @covers \Noodlehaus\Parser\Yaml::parse()
-     */
+    /** @covers \Noodlehaus\Parser\Yaml::parse() */
     public function testLoadYml()
     {
         $actual = $this->yaml->parseFile(__DIR__ . '/../mocks/pass/config.yml');
@@ -77,9 +71,7 @@ class YamlTest extends TestCase
         $this->assertSame(80, $actual['port']);
     }
 
-    /**
-     * @covers \Noodlehaus\Parser\Yaml::parseString()
-     */
+    /** @covers \Noodlehaus\Parser\Yaml::parseString() */
     public function testLoadYamlString()
     {
         $actual = $this->yaml->parseString(file_get_contents(__DIR__ . '/../mocks/pass/config.yaml'));

@@ -1,19 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Noodlehaus\Parser;
 
 use Exception;
-use Symfony\Component\Yaml\Yaml as YamlParser;
 use Noodlehaus\Exception\ParseException;
+use Symfony\Component\Yaml\Yaml as YamlParser;
 
 /**
  * YAML parser
  *
- * @package    Config
  * @author     Jesus A. Domingo <jesus.domingo@gmail.com>
  * @author     Hassan Khan <contact@hassankhan.me>
  * @author     Filip Š <projects@filips.si>
+ *
  * @link       https://github.com/noodlehaus/config
+ *
  * @license    MIT
  */
 class Yaml implements ParserInterface
@@ -24,14 +27,14 @@ class Yaml implements ParserInterface
      *
      * @throws ParseException If there is an error parsing the YAML file
      */
-    public function parseFile($filename)
+    public function parseFile(string $filename): ?array
     {
         try {
             $data = YamlParser::parseFile($filename, YamlParser::PARSE_CONSTANT);
         } catch (Exception $exception) {
             throw new ParseException(
                 [
-                    'message'   => 'Error parsing YAML file',
+                    'message' => 'Error parsing YAML file',
                     'exception' => $exception,
                 ]
             );
@@ -44,16 +47,16 @@ class Yaml implements ParserInterface
      * {@inheritDoc}
      * Loads a YAML/YML string as an array
      *
-     * @throws ParseException If If there is an error parsing the YAML string
+     * @throws ParseException If there is an error parsing the YAML string
      */
-    public function parseString($config)
+    public function parseString(string $config): ?array
     {
         try {
             $data = YamlParser::parse($config, YamlParser::PARSE_CONSTANT);
         } catch (Exception $exception) {
             throw new ParseException(
                 [
-                    'message'   => 'Error parsing YAML string',
+                    'message' => 'Error parsing YAML string',
                     'exception' => $exception,
                 ]
             );
@@ -62,23 +65,19 @@ class Yaml implements ParserInterface
         return (array)$this->parse($data);
     }
 
-    /**
-     * Completes parsing of YAML/YML data
-     *
-     * @param  array $data
-     *
-     * @return array|null
-     */
-    protected function parse($data = null)
+    /** {@inheritDoc} */
+    public static function getSupportedExtensions(): array
     {
-        return $data;
+        return ['yaml', 'yml'];
     }
 
     /**
-     * {@inheritDoc}
+     * Completes parsing of YAML/YML data
+     *
+     * @param array $data
      */
-    public static function getSupportedExtensions()
+    protected function parse(?array $data = null): ?array
     {
-        return ['yaml', 'yml'];
+        return $data;
     }
 }

@@ -1,17 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Noodlehaus\Parser;
 
 use Noodlehaus\Exception\ParseException;
+use SimpleXMLElement;
 
 /**
  * XML parser
  *
- * @package    Config
  * @author     Jesus A. Domingo <jesus.domingo@gmail.com>
  * @author     Hassan Khan <contact@hassankhan.me>
  * @author     Filip Š <projects@filips.si>
+ *
  * @link       https://github.com/noodlehaus/config
+ *
  * @license    MIT
  */
 class Xml implements ParserInterface
@@ -22,7 +26,7 @@ class Xml implements ParserInterface
      *
      * @throws ParseException If there is an error parsing the XML file
      */
-    public function parseFile($filename)
+    public function parseFile(string $filename): ?array
     {
         libxml_use_internal_errors(true);
         $data = simplexml_load_file($filename, null, LIBXML_NOERROR);
@@ -36,48 +40,46 @@ class Xml implements ParserInterface
      *
      * @throws ParseException If there is an error parsing the XML string
      */
-    public function parseString($config)
+    public function parseString(string $config): ?array
     {
         libxml_use_internal_errors(true);
         $data = simplexml_load_string($config, null, LIBXML_NOERROR);
+
         return (array)$this->parse($data);
+    }
+
+    /** {@inheritDoc} */
+    public static function getSupportedExtensions(): array
+    {
+        return ['xml'];
     }
 
     /**
      * Completes parsing of XML data
      *
-     * @param  \SimpleXMLElement|null $data
-     * @param  string $filename
-     *
-     * @return array|null
+     * @param SimpleXMLElement|null $data
+     * @param string                $filename
      *
      * @throws ParseException If there is an error parsing the XML data
      */
-    protected function parse($data = null, $filename = null)
+    protected function parse(SimpleXMLElement|bool|null $data = null, ?string $filename = null): ?array
     {
+        if ($data === null) {
+            return null;
+        }
         if ($data === false) {
-            $errors      = libxml_get_errors();
+            $errors = libxml_get_errors();
             $latestError = array_pop($errors);
-            $error       = [
+            $error = [
                 'message' => $latestError->message,
-                'type'    => $latestError->level,
-                'code'    => $latestError->code,
-                'file'    => $filename,
-                'line'    => $latestError->line,
+                'type' => $latestError->level,
+                'code' => $latestError->code,
+                'file' => $filename,
+                'line' => $latestError->line,
             ];
             throw new ParseException($error);
         }
 
-        $data = json_decode(json_encode($data), true);
-
-        return $data;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function getSupportedExtensions()
-    {
-        return ['xml'];
+        return json_decode(json_encode($data), true);
     }
 }

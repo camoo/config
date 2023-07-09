@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Parser;
+namespace Camoo\Config\Parser;
 
-use Noodlehaus\Exception\ParseException;
+use Camoo\Config\Enum\Parser;
+use Camoo\Config\Exception\ParseException;
 
 /**
  * INI parser
@@ -46,20 +47,19 @@ class Ini implements ParserInterface
     }
 
     /** {@inheritDoc} */
-    public static function getSupportedExtensions(): array
+    public function getSupportedExtensions(): array
     {
-        return ['ini'];
+        return [Parser::INI];
     }
 
     /**
      * Completes parsing of INI data
      *
-     * @param array  $data
-     * @param string $filename
+     * @param array|bool|null $data
      *
      * @throws ParseException If there is an error parsing the INI data
      */
-    protected function parse($data = null, $filename = null)
+    protected function parse(array|bool|null $data = null, ?string $filename = null): array
     {
         if (!$data) {
             $error = error_get_last();
@@ -83,28 +83,25 @@ class Ini implements ParserInterface
         return $this->expandDottedKey($data);
     }
 
-    /**
-     * Expand array with dotted keys to multidimensional array
-     *
-     * @param array $data
-     *
-     * @return array
-     */
-    protected function expandDottedKey($data)
+    /** Expand array with dotted keys to multidimensional array */
+    protected function expandDottedKey(array $data): array
     {
         foreach ($data as $key => $value) {
-            if (($found = strpos($key, '.')) !== false) {
-                $newKey = substr($key, 0, $found);
-                $remainder = substr($key, $found + 1);
-
-                $expandedValue = $this->expandDottedKey([$remainder => $value]);
-                if (isset($data[$newKey])) {
-                    $data[$newKey] = array_merge_recursive($data[$newKey], $expandedValue);
-                } else {
-                    $data[$newKey] = $expandedValue;
-                }
-                unset($data[$key]);
+            $found = strpos($key, '.');
+            if ($found === false) {
+                continue;
             }
+
+            $newKey = substr($key, 0, $found);
+            $remainder = substr($key, $found + 1);
+
+            $expandedValue = $this->expandDottedKey([$remainder => $value]);
+            if (isset($data[$newKey])) {
+                $data[$newKey] = array_merge_recursive($data[$newKey], $expandedValue);
+            } else {
+                $data[$newKey] = $expandedValue;
+            }
+            unset($data[$key]);
         }
 
         return $data;

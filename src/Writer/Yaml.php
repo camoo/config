@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Writer;
+namespace Camoo\Config\Writer;
 
+use Camoo\Config\Enum\Writer;
 use Symfony\Component\Yaml\Yaml as YamlParser;
 
 /**
@@ -30,8 +31,8 @@ class Yaml extends AbstractWriter
     }
 
     /** {@inheritdoc} */
-    public static function getSupportedExtensions(): array
+    public function getSupportedExtensions(): array
     {
-        return ['yaml'];
+        return [Writer::YAML, Writer::YML];
     }
 }

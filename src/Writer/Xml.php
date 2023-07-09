@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Writer;
+namespace Camoo\Config\Writer;
 
+use Camoo\Config\Enum\Writer;
 use DOMDocument;
 use SimpleXMLElement;
 
@@ -41,9 +42,9 @@ class Xml extends AbstractWriter
     }
 
     /** {@inheritdoc} */
-    public static function getSupportedExtensions(): array
+    public function getSupportedExtensions(): array
     {
-        return ['xml'];
+        return [Writer::XML];
     }
 
     /**

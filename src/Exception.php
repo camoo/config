@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus;
+namespace Camoo\Config;
 
 use RuntimeException;
 

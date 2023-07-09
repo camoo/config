@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Writer;
+namespace Camoo\Config\Writer;
+
+use Camoo\Config\Enum\Writer;
 
 /**
  * Class Serialize
@@ -16,8 +18,8 @@ class Serialize extends AbstractWriter
     }
 
     /** {@inheritdoc} */
-    public static function getSupportedExtensions(): array
+    public function getSupportedExtensions(): array
     {
-        return ['txt'];
+        return [Writer::TXT, Writer::SERIALIZE];
     }
 }

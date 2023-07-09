@@ -1,8 +1,9 @@
 <?php
 
-namespace Noodlehaus\Test\Parser;
+namespace Camoo\Config\Test\Parser;
 
-use Noodlehaus\Parser\Ini;
+use Camoo\Config\Enum\Parser;
+use Camoo\Config\Parser\Ini;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,30 +23,30 @@ class IniTest extends TestCase
         $this->ini = new Ini();
     }
 
-    /** @covers \Noodlehaus\Parser\Ini::getSupportedExtensions() */
+    /** @covers \Camoo\Config\Parser\Ini::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
-        $expected = ['ini'];
+        $expected = [Parser::INI];
         $actual = $this->ini->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Ini::parseFile()
-     * @covers \Noodlehaus\Parser\Ini::parse()
+     * @covers \Camoo\Config\Parser\Ini::parseFile()
+     * @covers \Camoo\Config\Parser\Ini::parse()
      * Tests the case where an INI string contains no parsable data at all, resulting in parse_ini_string
      * returning NULL, but not setting an error retrievable by error_get_last()
      */
     public function testLoadInvalidIniGBH()
     {
-        $this->expectException(\Noodlehaus\Exception\ParseException::class);
+        $this->expectException(\Camoo\Config\Exception\ParseException::class);
         $this->expectExceptionMessage('No parsable content');
         $this->ini->parseFile(__DIR__ . '/../mocks/fail/error2.ini');
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Ini::parseString()
-     * @covers \Noodlehaus\Parser\Ini::parse()
+     * @covers \Camoo\Config\Parser\Ini::parseString()
+     * @covers \Camoo\Config\Parser\Ini::parse()
      */
     public function testLoadInvalidIni()
     {
@@ -55,16 +56,16 @@ class IniTest extends TestCase
             $exceptionMessage = "syntax error, unexpected end of file, expecting ']' in Unknown on line 1";
         }
 
-        $this->expectException(\Noodlehaus\Exception\ParseException::class);
+        $this->expectException(\Camoo\Config\Exception\ParseException::class);
         $this->expectExceptionMessage($exceptionMessage);
 
         $this->ini->parseString(file_get_contents(__DIR__ . '/../mocks/fail/error.ini'));
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Ini::parseFile()
-     * @covers \Noodlehaus\Parser\Ini::parseString()
-     * @covers \Noodlehaus\Parser\Ini::parse()
+     * @covers \Camoo\Config\Parser\Ini::parseFile()
+     * @covers \Camoo\Config\Parser\Ini::parseString()
+     * @covers \Camoo\Config\Parser\Ini::parse()
      */
     public function testLoadIni()
     {
@@ -79,10 +80,10 @@ class IniTest extends TestCase
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Ini::parseFile()
-     * @covers \Noodlehaus\Parser\Ini::parseString()
-     * @covers \Noodlehaus\Parser\Ini::parse()
-     * @covers \Noodlehaus\Parser\Ini::expandDottedKey()
+     * @covers \Camoo\Config\Parser\Ini::parseFile()
+     * @covers \Camoo\Config\Parser\Ini::parseString()
+     * @covers \Camoo\Config\Parser\Ini::parse()
+     * @covers \Camoo\Config\Parser\Ini::expandDottedKey()
      */
     public function testLoadIniWithDottedName()
     {

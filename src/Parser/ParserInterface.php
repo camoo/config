@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Parser;
+namespace Camoo\Config\Parser;
 
 /**
  * Config file parser interface
@@ -31,8 +31,6 @@ interface ParserInterface
      */
     public function parseString(string $config): ?array;
 
-    /**
-     * Returns an array of allowed file extensions for this parser
-     */
-    public static function getSupportedExtensions(): array;
+    /** Returns an array of allowed file extensions for this parser */
+    public function getSupportedExtensions(): array;
 }

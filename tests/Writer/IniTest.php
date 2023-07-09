@@ -1,8 +1,9 @@
 <?php
 
-namespace Noodlehaus\Test\Writer;
+namespace Camoo\Config\Test\Writer;
 
-use Noodlehaus\Writer\Ini;
+use Camoo\Config\Enum\Writer;
+use Camoo\Config\Writer\Ini;
 use PHPUnit\Framework\TestCase;
 
 class IniTest extends TestCase
@@ -36,17 +37,17 @@ class IniTest extends TestCase
         ];
     }
 
-    /** @covers \Noodlehaus\Writer\Ini::getSupportedExtensions() */
+    /** @covers \Camoo\Config\Writer\Ini::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
-        $expected = ['ini'];
+        $expected = [Writer::INI];
         $actual = $this->writer->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
     /**
-     * @covers \Noodlehaus\Writer\Ini::toString()
-     * @covers \Noodlehaus\Writer\Ini::toINI()
+     * @covers \Camoo\Config\Writer\Ini::toString()
+     * @covers \Camoo\Config\Writer\Ini::toINI()
      */
     public function testEncodeIni()
     {
@@ -64,9 +65,9 @@ EOD;
     }
 
     /**
-     * @covers \Noodlehaus\Writer\Ini::toString()
-     * @covers \Noodlehaus\Writer\Ini::toFile()
-     * @covers \Noodlehaus\Writer\Ini::toINI()
+     * @covers \Camoo\Config\Writer\Ini::toString()
+     * @covers \Camoo\Config\Writer\Ini::toFile()
+     * @covers \Camoo\Config\Writer\Ini::toINI()
      */
     public function testWriteIni()
     {
@@ -77,13 +78,13 @@ EOD;
     }
 
     /**
-     * @covers \Noodlehaus\Writer\Ini::toString()
-     * @covers \Noodlehaus\Writer\Ini::toFile()
-     * @covers \Noodlehaus\Writer\Ini::toINI()
+     * @covers \Camoo\Config\Writer\Ini::toString()
+     * @covers \Camoo\Config\Writer\Ini::toFile()
+     * @covers \Camoo\Config\Writer\Ini::toINI()
      */
     public function testUnwritableFile()
     {
-        $this->expectException(\Noodlehaus\Exception\WriteException::class);
+        $this->expectException(\Camoo\Config\Exception\WriteException::class);
         $this->expectExceptionMessage('There was an error writing the file');
         chmod($this->temp_file, 0444);
 

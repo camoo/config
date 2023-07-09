@@ -1,8 +1,9 @@
 <?php
 
-namespace Noodlehaus\Test\Parser;
+namespace Camoo\Config\Test\Parser;
 
-use Noodlehaus\Parser\Properties;
+use Camoo\Config\Enum\Parser;
+use Camoo\Config\Parser\Properties;
 use PHPUnit\Framework\TestCase;
 
 class PropertiesTest extends TestCase
@@ -19,18 +20,18 @@ class PropertiesTest extends TestCase
         $this->properties = new Properties();
     }
 
-    /** @covers \Noodlehaus\Parser\Properties::getSupportedExtensions() */
+    /** @covers \Camoo\Config\Parser\Properties::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
-        $expected = ['properties'];
+        $expected = [Parser::PROPERTIES];
         $actual = $this->properties->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Properties::parseFile()
-     * @covers \Noodlehaus\Parser\Properties::parseString()
-     * @covers \Noodlehaus\Parser\Properties::parse()
+     * @covers \Camoo\Config\Parser\Properties::parseFile()
+     * @covers \Camoo\Config\Parser\Properties::parseString()
+     * @covers \Camoo\Config\Parser\Properties::parse()
      */
     public function testLoadProperties()
     {
@@ -46,8 +47,8 @@ class PropertiesTest extends TestCase
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Ini::parseFile()
-     * @covers \Noodlehaus\Parser\Ini::parse()
+     * @covers \Camoo\Config\Parser\Ini::parseFile()
+     * @covers \Camoo\Config\Parser\Ini::parse()
      */
     public function testLoadInvalidIniGBH()
     {

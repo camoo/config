@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Parser;
+namespace Camoo\Config\Parser;
 
-use Noodlehaus\Exception\ParseException;
+use Camoo\Config\Enum\Parser;
+use Camoo\Config\Exception\ParseException;
 
 /**
  * Class Serialize
@@ -26,9 +27,9 @@ class Serialize implements ParserInterface
     }
 
     /** {@inheritdoc} */
-    public static function getSupportedExtensions(): array
+    public function getSupportedExtensions(): array
     {
-        return ['txt'];
+        return [Parser::SERIALIZE, Parser::TXT];
     }
 
     /**

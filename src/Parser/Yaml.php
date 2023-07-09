@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Parser;
+namespace Camoo\Config\Parser;
 
+use Camoo\Config\Enum\Parser;
+use Camoo\Config\Exception\ParseException;
 use Exception;
-use Noodlehaus\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml as YamlParser;
 
 /**
@@ -66,9 +67,9 @@ class Yaml implements ParserInterface
     }
 
     /** {@inheritDoc} */
-    public static function getSupportedExtensions(): array
+    public function getSupportedExtensions(): array
     {
-        return ['yaml', 'yml'];
+        return [Parser::YAML, Parser::YML];
     }
 
     /**

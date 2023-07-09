@@ -1,8 +1,9 @@
 <?php
 
-namespace Noodlehaus\Test\Parser;
+namespace Camoo\Config\Test\Parser;
 
-use Noodlehaus\Parser\Json;
+use Camoo\Config\Enum\Parser;
+use Camoo\Config\Parser\Json;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,29 +23,29 @@ class JsonTest extends TestCase
         $this->json = new Json();
     }
 
-    /** @covers \Noodlehaus\Parser\Json::getSupportedExtensions() */
+    /** @covers \Camoo\Config\Parser\Json::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
-        $expected = ['json'];
+        $expected = [Parser::JSON];
         $actual = $this->json->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Json::parseFile()
-     * @covers \Noodlehaus\Parser\Json::parse()
+     * @covers \Camoo\Config\Parser\Json::parseFile()
+     * @covers \Camoo\Config\Parser\Json::parse()
      */
     public function testLoadInvalidJson()
     {
-        $this->expectException(\Noodlehaus\Exception\ParseException::class);
+        $this->expectException(\Camoo\Config\Exception\ParseException::class);
         $this->expectExceptionMessage('Syntax error');
         $this->json->parseFile(__DIR__ . '/../mocks/fail/error.json');
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Json::parseFile()
-     * @covers \Noodlehaus\Parser\Json::parseString()
-     * @covers \Noodlehaus\Parser\Json::parse()
+     * @covers \Camoo\Config\Parser\Json::parseFile()
+     * @covers \Camoo\Config\Parser\Json::parseString()
+     * @covers \Camoo\Config\Parser\Json::parse()
      */
     public function testLoadJson()
     {

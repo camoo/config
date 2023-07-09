@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Writer;
+namespace Camoo\Config\Writer;
+
+use Camoo\Config\Enum\Writer;
 
 /**
  * Properties Writer.
@@ -28,9 +30,9 @@ class Properties extends AbstractWriter
     }
 
     /** {@inheritdoc} */
-    public static function getSupportedExtensions(): array
+    public function getSupportedExtensions(): array
     {
-        return ['properties'];
+        return [Writer::PROPERTIES];
     }
 
     /**

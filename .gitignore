@@ -1,8 +1,8 @@
 vendor
-composer.lock
 build
 node_modules
 phpunit.xml
+.php-cs-fixer.cache
 # Ignore files from PHPStorm
 .idea
 

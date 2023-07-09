@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Writer;
+namespace Camoo\Config\Writer;
 
-use Noodlehaus\Exception\WriteException;
+use Camoo\Config\Enum\Writer;
+use Camoo\Config\Exception\WriteException;
 
 /**
  * JSON Writer.
@@ -45,8 +46,8 @@ class Json extends AbstractWriter
     }
 
     /** {@inheritdoc} */
-    public static function getSupportedExtensions(): array
+    public function getSupportedExtensions(): array
     {
-        return ['json'];
+        return [Writer::JSON];
     }
 }

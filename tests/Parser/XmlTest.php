@@ -1,8 +1,9 @@
 <?php
 
-namespace Noodlehaus\Test\Parser;
+namespace Camoo\Config\Test\Parser;
 
-use Noodlehaus\Parser\Xml;
+use Camoo\Config\Enum\Parser;
+use Camoo\Config\Parser\Xml;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,29 +23,29 @@ class XmlTest extends TestCase
         $this->xml = new Xml();
     }
 
-    /** @covers \Noodlehaus\Parser\Xml::getSupportedExtensions() */
+    /** @covers \Camoo\Config\Parser\Xml::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
-        $expected = ['xml'];
+        $expected = [Parser::XML];
         $actual = $this->xml->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Xml::parseFile()
-     * @covers \Noodlehaus\Parser\Xml::parse()
+     * @covers \Camoo\Config\Parser\Xml::parseFile()
+     * @covers \Camoo\Config\Parser\Xml::parse()
      */
     public function testLoadInvalidXml()
     {
-        $this->expectException(\Noodlehaus\Exception\ParseException::class);
+        $this->expectException(\Camoo\Config\Exception\ParseException::class);
         $this->expectExceptionMessage('Opening and ending tag mismatch: name line 4');
         $this->xml->parseFile(__DIR__ . '/../mocks/fail/error.xml');
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Xml::parseFile()
-     * @covers \Noodlehaus\Parser\Xml::parseString()
-     * @covers \Noodlehaus\Parser\Xml::parse()
+     * @covers \Camoo\Config\Parser\Xml::parseFile()
+     * @covers \Camoo\Config\Parser\Xml::parseString()
+     * @covers \Camoo\Config\Parser\Xml::parse()
      */
     public function testLoadXml()
     {

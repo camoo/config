@@ -1,8 +1,9 @@
 <?php
 
-namespace Noodlehaus\Test\Writer;
+namespace Camoo\Config\Test\Writer;
 
-use Noodlehaus\Writer\Serialize;
+use Camoo\Config\Enum\Writer;
+use Camoo\Config\Writer\Serialize;
 use PHPUnit\Framework\TestCase;
 
 class SerializeTest extends TestCase
@@ -39,15 +40,24 @@ class SerializeTest extends TestCase
         ];
     }
 
-    /** @covers \Noodlehaus\Writer\Serialize::getSupportedExtensions() */
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown(): void
+    {
+        unlink($this->temp_file);
+    }
+
+    /** @covers \Camoo\Config\Writer\Serialize::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
-        $expected = ['txt'];
+        $expected = [Writer::TXT, Writer::SERIALIZE];
         $actual = $this->writer->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
-    /** @covers \Noodlehaus\Writer\Serialize::toString() */
+    /** @covers \Camoo\Config\Writer\Serialize::toString() */
     public function testSerialize()
     {
         $actual = $this->writer->toString($this->data, false);
@@ -57,8 +67,8 @@ class SerializeTest extends TestCase
     }
 
     /**
-     * @covers \Noodlehaus\Writer\Serialize::toString()
-     * @covers \Noodlehaus\Writer\Serialize::toFile()
+     * @covers \Camoo\Config\Writer\Serialize::toString()
+     * @covers \Camoo\Config\Writer\Serialize::toFile()
      */
     public function testWriteSerialize()
     {
@@ -69,24 +79,15 @@ class SerializeTest extends TestCase
     }
 
     /**
-     * @covers \Noodlehaus\Writer\Serialize::toString()
-     * @covers \Noodlehaus\Writer\Serialize::toFile()
+     * @covers \Camoo\Config\Writer\Serialize::toString()
+     * @covers \Camoo\Config\Writer\Serialize::toFile()
      */
     public function testUnwritableFile()
     {
-        $this->expectException(\Noodlehaus\Exception\WriteException::class);
+        $this->expectException(\Camoo\Config\Exception\WriteException::class);
         $this->expectExceptionMessage('There was an error writing the file');
         chmod($this->temp_file, 0444);
 
         $this->writer->toFile($this->data, $this->temp_file);
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tear_down()
-    {
-        unlink($this->temp_file);
     }
 }

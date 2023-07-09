@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Writer;
+namespace Camoo\Config\Writer;
 
-use Noodlehaus\Exception\WriteException;
+use Camoo\Config\Exception\WriteException;
 
 /**
  * Base Writer.

@@ -1,8 +1,8 @@
 <?php
 
-namespace Noodlehaus\Test\Fixture;
+namespace Camoo\Config\Test\Fixture;
 
-use Noodlehaus\AbstractConfig;
+use Camoo\Config\AbstractConfig;
 
 class SimpleConfig extends AbstractConfig
 {

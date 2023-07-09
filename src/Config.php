@@ -2,14 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus;
+namespace Camoo\Config;
 
-use Noodlehaus\Exception\EmptyDirectoryException;
-use Noodlehaus\Exception\FileNotFoundException;
-use Noodlehaus\Exception\UnsupportedFormatException;
-use Noodlehaus\Exception\WriteException;
-use Noodlehaus\Parser\ParserInterface;
-use Noodlehaus\Writer\WriterInterface;
+use Camoo\Config\Enum\Parser;
+use Camoo\Config\Enum\Writer;
+use Camoo\Config\Exception\EmptyDirectoryException;
+use Camoo\Config\Exception\FileNotFoundException;
+use Camoo\Config\Exception\UnsupportedFormatException;
+use Camoo\Config\Exception\WriteException;
+use Camoo\Config\Parser\ParserInterface;
+use Camoo\Config\Writer\WriterInterface;
+use DirectoryIterator;
+use SplFileInfo;
 
 /**
  * Configuration reader and writer for PHP.
@@ -25,36 +29,11 @@ use Noodlehaus\Writer\WriterInterface;
 class Config extends AbstractConfig
 {
     /**
-     * All formats supported by Config.
-     *
-     * @var array
-     */
-    protected $supportedParsers = [
-        'Noodlehaus\Parser\Php',
-        'Noodlehaus\Parser\Ini',
-        'Noodlehaus\Parser\Json',
-        'Noodlehaus\Parser\Xml',
-        'Noodlehaus\Parser\Yaml',
-        'Noodlehaus\Parser\Properties',
-        'Noodlehaus\Parser\Serialize',
-    ];
-
-    /** All formats supported by Config. */
-    protected array $supportedWriters = [
-        'Noodlehaus\Writer\Ini',
-        'Noodlehaus\Writer\Json',
-        'Noodlehaus\Writer\Xml',
-        'Noodlehaus\Writer\Yaml',
-        'Noodlehaus\Writer\Properties',
-        'Noodlehaus\Writer\Serialize',
-    ];
-
-    /**
      * Loads a Config instance.
      *
-     * @param string|array    $values Filenames or string with configuration
-     * @param ParserInterface $parser Configuration parser
-     * @param bool            $string Enable loading from string
+     * @param string|array         $values Filenames or string with configuration
+     * @param ParserInterface|null $parser Configuration parser
+     * @param bool                 $string Enable loading from string
      */
     public function __construct(array|string $values, ?ParserInterface $parser = null, bool $string = false)
     {
@@ -70,9 +49,9 @@ class Config extends AbstractConfig
     /**
      * Static method for loading a Config instance.
      *
-     * @param string|array    $values Filenames or string with configuration
-     * @param ParserInterface $parser Configuration parser
-     * @param bool            $string Enable loading from string
+     * @param string|array         $values Filenames or string with configuration
+     * @param ParserInterface|null $parser Configuration parser
+     * @param bool                 $string Enable loading from string
      */
     public static function load(array|string $values, ?ParserInterface $parser = null, bool $string = false): self
     {
@@ -82,8 +61,8 @@ class Config extends AbstractConfig
     /**
      * Writes configuration to file.
      *
-     * @param string          $filename Filename to save configuration to
-     * @param WriterInterface $writer   Configuration writer
+     * @param string               $filename Filename to save configuration to
+     * @param WriterInterface|null $writer   Configuration writer
      *
      * @throws WriteException if the data could not be written to the file
      */
@@ -128,22 +107,29 @@ class Config extends AbstractConfig
     /**
      * Loads configuration from file.
      *
-     * @param string|array    $path   Filenames or directories with configuration
-     * @param ParserInterface $parser Configuration parser
-     *
-     * @throws EmptyDirectoryException If `$path` is an empty directory
+     * @param string|array         $path   Filenames or directories with configuration
+     * @param ParserInterface|null $parser Configuration parser
      */
     protected function loadFromFile(array|string $path, ?ParserInterface $parser = null): void
     {
         $paths = $this->getValidPath($path);
         $this->data = [];
+        $loaded = 0;
+        /** @var SplFileInfo|string $fileInfo */
+        foreach ($paths as $fileInfo) {
+            if ($fileInfo instanceof SplFileInfo && $fileInfo->isDot()) {
+                continue;
+            }
 
-        foreach ($paths as $path) {
+            $path = is_string($fileInfo) ? $fileInfo : $fileInfo->getPathname();
+
             if ($parser === null) {
                 // Get file information
-                $info = pathinfo($path);
-                $parts = explode('.', $info['basename']);
-                $extension = array_pop($parts);
+                $info = is_string($fileInfo) ? pathinfo($path) : null;
+                $basename = $fileInfo instanceof SplFileInfo ? $fileInfo->getBasename() : $info['basename'];
+                $parts = explode('.', $basename);
+
+                $extension = $fileInfo instanceof SplFileInfo ? $fileInfo->getExtension() : array_pop($parts);
 
                 // Skip the `dist` extension
                 if ($extension === 'dist') {
@@ -162,6 +148,12 @@ class Config extends AbstractConfig
                 // Try to load file using specified parser
                 $this->data = array_replace_recursive($this->data, $parser->parseFile($path));
             }
+            ++$loaded;
+        }
+        if ($loaded === 0) {
+            throw new EmptyDirectoryException(
+                sprintf('Directory %s is empty', is_string($path) ? $path : json_encode($path))
+            );
         }
     }
 
@@ -186,9 +178,14 @@ class Config extends AbstractConfig
      */
     protected function getParser(string $extension): ParserInterface
     {
-        foreach ($this->supportedParsers as $parser) {
-            if (in_array($extension, $parser::getSupportedExtensions())) {
-                return new $parser();
+        foreach (Parser::cases() as $parser) {
+            if (strtoupper($extension) !== $parser->name) {
+                continue;
+            }
+
+            $instance = $parser->getInstance();
+            if (in_array($parser, $instance->getSupportedExtensions(), true)) {
+                return $instance;
             }
         }
 
@@ -203,9 +200,13 @@ class Config extends AbstractConfig
      */
     protected function getWriter(string $extension): WriterInterface
     {
-        foreach ($this->supportedWriters as $writer) {
-            if (in_array($extension, $writer::getSupportedExtensions())) {
-                return new $writer();
+        foreach (Writer::cases() as $writer) {
+            if (strtoupper($extension) !== $writer->name) {
+                continue;
+            }
+            $instance = $writer->getInstance();
+            if (in_array($writer, $instance->getSupportedExtensions(), true)) {
+                return $instance;
             }
         }
 
@@ -254,28 +255,25 @@ class Config extends AbstractConfig
      * @throws EmptyDirectoryException If `$path` is an empty directory
      * @throws FileNotFoundException   If a file is not found at `$path`
      */
-    protected function getValidPath(array|string $path): array
+    protected function getValidPath(array|string $path): array|DirectoryIterator
     {
-        // If `$path` is array
+        // If `$path` is arrayed
         if (is_array($path)) {
             return $this->getPathFromArray($path);
         }
 
-        // If `$path` is a directory
-        if (is_dir($path)) {
-            $paths = glob($path . '/*.*');
-            if (empty($paths)) {
-                throw new EmptyDirectoryException("Configuration directory: [{$path}] is empty");
-            }
-
-            return $paths;
+        if (is_string($path) && is_file($path)) {
+            return [$path];
         }
 
         // If `$path` is not a file, throw an exception
-        if (!file_exists($path)) {
+        if (!is_dir($path)) {
             throw new FileNotFoundException("Configuration file: [{$path}] cannot be found");
         }
+        // If `$path` is a directory
 
-        return [$path];
+        $path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
+        return new DirectoryIterator($path);
     }
 }

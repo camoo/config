@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Parser;
+namespace Camoo\Config\Parser;
 
+use Camoo\Config\Enum\Parser;
+use Camoo\Config\Exception\ParseException;
+use Camoo\Config\Exception\UnsupportedFormatException;
 use Exception;
-use Noodlehaus\Exception\ParseException;
-use Noodlehaus\Exception\UnsupportedFormatException;
 
 /**
  * PHP parser
@@ -78,17 +79,15 @@ class Php implements ParserInterface
     }
 
     /** {@inheritDoc} */
-    public static function getSupportedExtensions(): array
+    public function getSupportedExtensions(): array
     {
-        return ['php'];
+        return [Parser::PHP];
     }
 
     /**
      * Completes parsing of PHP data
      *
-     * @param array $data
-     *
-     * @throws UnsupportedFormatException
+     * @param callable|array|null $data
      */
     protected function parse(callable|array|null $data = null): ?array
     {

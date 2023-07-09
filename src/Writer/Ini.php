@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Writer;
+namespace Camoo\Config\Writer;
+
+use Camoo\Config\Enum\Writer;
 
 /**
  * Ini Writer.
@@ -27,9 +29,9 @@ class Ini extends AbstractWriter
     }
 
     /** {@inheritdoc} */
-    public static function getSupportedExtensions(): array
+    public function getSupportedExtensions(): array
     {
-        return ['ini'];
+        return [Writer::INI];
     }
 
     /**

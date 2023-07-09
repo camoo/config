@@ -1,8 +1,9 @@
 <?php
 
-namespace Noodlehaus\Test\Writer;
+namespace Camoo\Config\Test\Writer;
 
-use Noodlehaus\Writer\Json;
+use Camoo\Config\Enum\Writer;
+use Camoo\Config\Writer\Json;
 use PHPUnit\Framework\TestCase;
 
 class JsonTest extends TestCase
@@ -39,15 +40,15 @@ class JsonTest extends TestCase
         ];
     }
 
-    /** @covers \Noodlehaus\Writer\Json::getSupportedExtensions() */
+    /** @covers \Camoo\Config\Writer\Json::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
-        $expected = ['json'];
+        $expected = [Writer::JSON];
         $actual = $this->writer->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
-    /** @covers \Noodlehaus\Writer\Json::toString() */
+    /** @covers \Camoo\Config\Writer\Json::toString() */
     public function testEncodeJson()
     {
         $actual = $this->writer->toString($this->data, false);
@@ -57,8 +58,8 @@ class JsonTest extends TestCase
     }
 
     /**
-     * @covers \Noodlehaus\Writer\Json::toString()
-     * @covers \Noodlehaus\Writer\Json::toFile()
+     * @covers \Camoo\Config\Writer\Json::toString()
+     * @covers \Camoo\Config\Writer\Json::toFile()
      */
     public function testWriteJson()
     {
@@ -69,12 +70,12 @@ class JsonTest extends TestCase
     }
 
     /**
-     * @covers \Noodlehaus\Writer\Json::toString()
-     * @covers \Noodlehaus\Writer\Json::toFile()
+     * @covers \Camoo\Config\Writer\Json::toString()
+     * @covers \Camoo\Config\Writer\Json::toFile()
      */
     public function testUnwritableFile()
     {
-        $this->expectException(\Noodlehaus\Exception\WriteException::class);
+        $this->expectException(\Camoo\Config\Exception\WriteException::class);
         $this->expectExceptionMessage('There was an error writing the file');
         chmod($this->temp_file, 0444);
 

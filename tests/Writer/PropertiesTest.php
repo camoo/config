@@ -1,8 +1,9 @@
 <?php
 
-namespace Noodlehaus\Test\Writer;
+namespace Camoo\Config\Test\Writer;
 
-use Noodlehaus\Writer\Properties;
+use Camoo\Config\Enum\Writer;
+use Camoo\Config\Writer\Properties;
 use PHPUnit\Framework\TestCase;
 
 class PropertiesTest extends TestCase
@@ -35,17 +36,26 @@ class PropertiesTest extends TestCase
         ];
     }
 
-    /** @covers \Noodlehaus\Writer\Properties::getSupportedExtensions() */
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown(): void
+    {
+        unlink($this->temp_file);
+    }
+
+    /** @covers \Camoo\Config\Writer\Properties::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
-        $expected = ['properties'];
+        $expected = [Writer::PROPERTIES];
         $actual = $this->writer->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
     /**
-     * @covers \Noodlehaus\Writer\Properties::toString()
-     * @covers \Noodlehaus\Writer\Properties::toProperties()
+     * @covers \Camoo\Config\Writer\Properties::toString()
+     * @covers \Camoo\Config\Writer\Properties::toProperties()
      */
     public function testEncodeProperties()
     {
@@ -65,9 +75,9 @@ EOD;
     }
 
     /**
-     * @covers \Noodlehaus\Writer\Properties::toString()
-     * @covers \Noodlehaus\Writer\Properties::toFile()
-     * @covers \Noodlehaus\Writer\Properties::toProperties()
+     * @covers \Camoo\Config\Writer\Properties::toString()
+     * @covers \Camoo\Config\Writer\Properties::toFile()
+     * @covers \Camoo\Config\Writer\Properties::toProperties()
      */
     public function testWriteProperties()
     {
@@ -78,25 +88,16 @@ EOD;
     }
 
     /**
-     * @covers \Noodlehaus\Writer\Properties::toString()
-     * @covers \Noodlehaus\Writer\Properties::toFile()
-     * @covers \Noodlehaus\Writer\Properties::toProperties()
+     * @covers \Camoo\Config\Writer\Properties::toString()
+     * @covers \Camoo\Config\Writer\Properties::toFile()
+     * @covers \Camoo\Config\Writer\Properties::toProperties()
      */
     public function testUnwritableFile()
     {
-        $this->expectException(\Noodlehaus\Exception\WriteException::class);
+        $this->expectException(\Camoo\Config\Exception\WriteException::class);
         $this->expectExceptionMessage('There was an error writing the file');
         chmod($this->temp_file, 0444);
 
         $this->writer->toFile($this->data, $this->temp_file);
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tear_down()
-    {
-        unlink($this->temp_file);
     }
 }

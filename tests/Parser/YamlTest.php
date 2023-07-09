@@ -1,8 +1,9 @@
 <?php
 
-namespace Noodlehaus\Test\Parser;
+namespace Camoo\Config\Test\Parser;
 
-use Noodlehaus\Parser\Yaml;
+use Camoo\Config\Enum\Parser;
+use Camoo\Config\Parser\Yaml;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,39 +23,39 @@ class YamlTest extends TestCase
         $this->yaml = new Yaml();
     }
 
-    /** @covers \Noodlehaus\Parser\Yaml::getSupportedExtensions() */
+    /** @covers \Camoo\Config\Parser\Yaml::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
-        $expected = ['yaml', 'yml'];
+        $expected = [Parser::YAML, Parser::YML];
         $actual = $this->yaml->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Yaml::parseFile()
-     * @covers \Noodlehaus\Parser\Yaml::parse()
+     * @covers \Camoo\Config\Parser\Yaml::parseFile()
+     * @covers \Camoo\Config\Parser\Yaml::parse()
      */
     public function testLoadInvalidYamlFile()
     {
-        $this->expectException(\Noodlehaus\Exception\ParseException::class);
+        $this->expectException(\Camoo\Config\Exception\ParseException::class);
         $this->expectExceptionMessage('Error parsing YAML file');
         $this->yaml->parseFile(__DIR__ . '/../mocks/fail/error.yaml');
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Yaml::parseString()
-     * @covers \Noodlehaus\Parser\Yaml::parse()
+     * @covers \Camoo\Config\Parser\Yaml::parseString()
+     * @covers \Camoo\Config\Parser\Yaml::parse()
      */
     public function testLoadInvalidYamlString()
     {
-        $this->expectException(\Noodlehaus\Exception\ParseException::class);
+        $this->expectException(\Camoo\Config\Exception\ParseException::class);
         $this->expectExceptionMessage('Error parsing YAML string');
         $this->yaml->parseString(file_get_contents(__DIR__ . '/../mocks/fail/error.yaml'));
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Yaml::parseFile()
-     * @covers \Noodlehaus\Parser\Yaml::parse()
+     * @covers \Camoo\Config\Parser\Yaml::parseFile()
+     * @covers \Camoo\Config\Parser\Yaml::parse()
      */
     public function testLoadYaml()
     {
@@ -63,7 +64,7 @@ class YamlTest extends TestCase
         $this->assertSame(80, $actual['port']);
     }
 
-    /** @covers \Noodlehaus\Parser\Yaml::parse() */
+    /** @covers \Camoo\Config\Parser\Yaml::parse() */
     public function testLoadYml()
     {
         $actual = $this->yaml->parseFile(__DIR__ . '/../mocks/pass/config.yml');
@@ -71,7 +72,7 @@ class YamlTest extends TestCase
         $this->assertSame(80, $actual['port']);
     }
 
-    /** @covers \Noodlehaus\Parser\Yaml::parseString() */
+    /** @covers \Camoo\Config\Parser\Yaml::parseString() */
     public function testLoadYamlString()
     {
         $actual = $this->yaml->parseString(file_get_contents(__DIR__ . '/../mocks/pass/config.yaml'));

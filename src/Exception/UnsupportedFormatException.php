@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Exception;
+namespace Camoo\Config\Exception;
 
-use Noodlehaus\Exception;
+use Camoo\Config\Exception;
 
 class UnsupportedFormatException extends Exception
 {

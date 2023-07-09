@@ -1,8 +1,9 @@
 <?php
 
-namespace Noodlehaus\Test\Parser;
+namespace Camoo\Config\Test\Parser;
 
-use Noodlehaus\Parser\Serialize;
+use Camoo\Config\Enum\Parser;
+use Camoo\Config\Parser\Serialize;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,29 +23,29 @@ class SerializeTest extends TestCase
         $this->serialize = new Serialize();
     }
 
-    /** @covers \Noodlehaus\Parser\Serialize::getSupportedExtensions() */
+    /** @covers \Camoo\Config\Parser\Serialize::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
-        $expected = ['txt'];
+        $expected = [Parser::SERIALIZE, Parser::TXT];
         $actual = $this->serialize->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Serialize::parseFile()
-     * @covers \Noodlehaus\Parser\Serialize::parse()
+     * @covers \Camoo\Config\Parser\Serialize::parseFile()
+     * @covers \Camoo\Config\Parser\Serialize::parse()
      */
     public function testLoadInvalidSerialize()
     {
-        $this->expectException(\Noodlehaus\Exception\ParseException::class);
+        $this->expectException(\Camoo\Config\Exception\ParseException::class);
         $this->expectExceptionMessage('unserialize(): Error at offset 57 of 58 bytes');
         $this->serialize->parseFile(__DIR__ . '/../mocks/fail/error.txt');
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Serialize::parseFile()
-     * @covers \Noodlehaus\Parser\Serialize::parseString()
-     * @covers \Noodlehaus\Parser\Serialize::parse()
+     * @covers \Camoo\Config\Parser\Serialize::parseFile()
+     * @covers \Camoo\Config\Parser\Serialize::parseString()
+     * @covers \Camoo\Config\Parser\Serialize::parse()
      */
     public function testLoadSerialize()
     {

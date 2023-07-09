@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Exception;
+namespace Camoo\Config\Exception;
 
-use Noodlehaus\ErrorException;
+use Camoo\Config\ErrorException;
 
 class WriteException extends ErrorException
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Parser;
+namespace Camoo\Config\Parser;
 
 /**
  * Abstract parser
@@ -19,8 +19,6 @@ abstract class AbstractParser implements ParserInterface
 {
     /**
      * Sets the string with configuration
-     *
-     * @param string $filename
      *
      * @codeCoverageIgnore
      */

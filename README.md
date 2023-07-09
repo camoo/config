@@ -1,19 +1,11 @@
 # Config
 
-[![Latest version][ico-version]][link-packagist]
-[![Software License][ico-license]][link-license]
-[![Build Status][ico-gh-actions]][link-gh-actions]
-[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
-[![Quality Score][ico-code-quality]][link-code-quality]
-[![Total Downloads][ico-downloads]][link-downloads]
-[![Gitter][ico-gitter]][link-gitter]
-
 Config is a file configuration loader that supports PHP, INI, XML, JSON,
 YML, Properties and serialized files and strings.
 
 ## Requirements
 
-Config requires PHP 7.4+.
+Config requires PHP 8.1+.
 
 > **IMPORTANT:** If you want to use YAML files or strings, require the [Symfony Yaml component](https://github.com/symfony/Yaml) in your `composer.json`.
 
@@ -22,7 +14,7 @@ Config requires PHP 7.4+.
 The supported way of installing Config is via Composer.
 
 ```sh
-$ composer require hassankhan/config
+$ composer require camoo/config
 ```
 
 ## Usage
@@ -36,8 +28,8 @@ The `Config` object can be created via the factory method `load()`, or
 by direct instantiation:
 
 ```php
-use Noodlehaus\Config;
-use Noodlehaus\Parser\Json;
+use Camoo\Config\Config;
+use Camoo\Config\Parser\Json;
 
 // Load a single file
 $conf = Config::load('config.json');
@@ -73,9 +65,9 @@ Configuration from string can be created via the factory method `load()` or
 by direct instantiation, with argument `$string` set to `true`:
 
 ```php
-use Noodlehaus\Config;
-use Noodlehaus\Parser\Json;
-use Noodlehaus\Parser\Yaml;
+use Camoo\Config\Config;
+use Camoo\Config\Parser\Json;
+use Camoo\Config\Parser\Yaml;
 
 $settingsJson = <<<FOOBAR
 {
@@ -238,38 +230,18 @@ $ phpunit
 ```
 
 
-## Contributing
+## Resources
+---------
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-
-## Security
-
-If you discover any security related issues, please email [contact@hassankhan.me](mailto:contact@hassankhan.me?subject=[SECURITY]%20Config%20Security%20Issue) instead of using the issue tracker.
+* [Report issues](https://github.com/camoo/config/issues)
 
 
 ## Credits
 
+- [Camoo Sarl](https://github.com/camoo)
 - [Hassan Khan](https://github.com/hassankhan)
-- [All Contributors](../../contributors)
 
 
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
-[ico-version]: https://img.shields.io/packagist/v/hassankhan/config.svg?style=flat-square
-[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-gh-actions]: https://img.shields.io/github/workflow/status/hassankhan/config/Continuous%20Integration/master?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/hassankhan/config.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/hassankhan/config.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/hassankhan/config.svg?style=flat-square
-[ico-gitter]: https://img.shields.io/badge/GITTER-JOIN%20CHAT%20%E2%86%92-brightgreen.svg?style=flat-square
-
-[link-packagist]: https://packagist.org/packages/hassankhan/config
-[link-license]: http://hassankhan.mit-license.org
-[link-gh-actions]: https://github.com/hassankhan/config/actions?query=workflow%3A%22Continuous+Integration%22+branch%3Amaster
-[link-scrutinizer]: https://scrutinizer-ci.com/g/hassankhan/config/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/hassankhan/config
-[link-downloads]: https://packagist.org/packages/hassankhan/config
-[link-gitter]: https://gitter.im/hassankhan/config?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge

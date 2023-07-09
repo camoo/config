@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Parser;
+namespace Camoo\Config\Parser;
 
-use Noodlehaus\Exception\ParseException;
+use Camoo\Config\Enum\Parser;
+use Camoo\Config\Exception\ParseException;
 
 /**
  * JSON parser
@@ -46,16 +47,13 @@ class Json implements ParserInterface
     }
 
     /** {@inheritDoc} */
-    public static function getSupportedExtensions(): array
+    public function getSupportedExtensions(): array
     {
-        return ['json'];
+        return [Parser::JSON];
     }
 
     /**
      * Completes parsing of JSON data
-     *
-     * @param array  $data
-     * @param string $filename
      *
      * @throws ParseException If there is an error parsing the JSON data
      */

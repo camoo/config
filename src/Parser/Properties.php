@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Parser;
+namespace Camoo\Config\Parser;
+
+use Camoo\Config\Enum\Parser;
 
 /**
  * Properties parser.
@@ -37,9 +39,9 @@ class Properties implements ParserInterface
     }
 
     /** {@inheritdoc} */
-    public static function getSupportedExtensions(): array
+    public function getSupportedExtensions(): array
     {
-        return ['properties'];
+        return [Parser::PROPERTIES];
     }
 
     private function parse(string $txtProperties): array

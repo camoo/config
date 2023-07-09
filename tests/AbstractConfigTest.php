@@ -1,8 +1,8 @@
 <?php
 
-namespace Noodlehaus\Test;
+namespace Camoo\Config\Test;
 
-use Noodlehaus\Test\Fixture\SimpleConfig;
+use Camoo\Config\Test\Fixture\SimpleConfig;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class AbstractConfigTest extends TestCase
 {
-    /** @var \Noodlehaus\Config */
+    /** @var \Camoo\Config\Config */
     protected $config;
 
     /**
@@ -39,8 +39,8 @@ class AbstractConfigTest extends TestCase
     }
 
     /**
-     * @covers \Noodlehaus\AbstractConfig::__construct()
-     * @covers \Noodlehaus\AbstractConfig::getDefaults()
+     * @covers \Camoo\Config\AbstractConfig::__construct()
+     * @covers \Camoo\Config\AbstractConfig::getDefaults()
      */
     public function testDefaultOptionsSetOnInstantiation()
     {
@@ -54,43 +54,43 @@ class AbstractConfigTest extends TestCase
         $this->assertSame(80, $config->get('port'));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::get() */
+    /** @covers \Camoo\Config\AbstractConfig::get() */
     public function testGet()
     {
         $this->assertSame('localhost', $this->config->get('host'));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::get() */
+    /** @covers \Camoo\Config\AbstractConfig::get() */
     public function testGetWithDefaultValue()
     {
         $this->assertSame(128, $this->config->get('ttl', 128));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::get() */
+    /** @covers \Camoo\Config\AbstractConfig::get() */
     public function testGetNestedKey()
     {
         $this->assertSame('configuration', $this->config->get('application.name'));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::get() */
+    /** @covers \Camoo\Config\AbstractConfig::get() */
     public function testGetNestedKeyWithDefaultValue()
     {
         $this->assertSame(128, $this->config->get('application.ttl', 128));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::get() */
+    /** @covers \Camoo\Config\AbstractConfig::get() */
     public function testGetNonexistentKey()
     {
         $this->assertNull($this->config->get('proxy'));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::get() */
+    /** @covers \Camoo\Config\AbstractConfig::get() */
     public function testGetNonexistentNestedKey()
     {
         $this->assertNull($this->config->get('proxy.name'));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::get() */
+    /** @covers \Camoo\Config\AbstractConfig::get() */
     public function testGetReturnsArray()
     {
         $this->assertArrayHasKey('name', $this->config->get('application'));
@@ -98,21 +98,21 @@ class AbstractConfigTest extends TestCase
         $this->assertCount(3, $this->config->get('application'));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::set() */
+    /** @covers \Camoo\Config\AbstractConfig::set() */
     public function testSet()
     {
         $this->config->set('region', 'apac');
         $this->assertSame('apac', $this->config->get('region'));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::set() */
+    /** @covers \Camoo\Config\AbstractConfig::set() */
     public function testSetNestedKey()
     {
         $this->config->set('location.country', 'Singapore');
         $this->assertSame('Singapore', $this->config->get('location.country'));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::set() */
+    /** @covers \Camoo\Config\AbstractConfig::set() */
     public function testSetArray()
     {
         $this->config->set('database', [
@@ -123,7 +123,7 @@ class AbstractConfigTest extends TestCase
         $this->assertSame('localhost', $this->config->get('database.host'));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::set() */
+    /** @covers \Camoo\Config\AbstractConfig::set() */
     public function testCacheWithNestedArray()
     {
         $this->config->set('database', [
@@ -163,7 +163,7 @@ class AbstractConfigTest extends TestCase
         $this->assertSame($expected, $this->config->get('config.database'));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::set() */
+    /** @covers \Camoo\Config\AbstractConfig::set() */
     public function testCacheWithNestedMiddleArray()
     {
         $this->config->set('config', [
@@ -185,7 +185,7 @@ class AbstractConfigTest extends TestCase
         $this->assertSame('mynewdatabase', $this->config->get('config.database.name'));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::set() */
+    /** @covers \Camoo\Config\AbstractConfig::set() */
     public function testSetAndUnsetArray()
     {
         $this->config->set('database', [
@@ -200,7 +200,7 @@ class AbstractConfigTest extends TestCase
         $this->assertNull($this->config->get('database'));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::has() */
+    /** @covers \Camoo\Config\AbstractConfig::has() */
     public function testHas()
     {
         $this->assertTrue($this->config->has('application'));
@@ -208,7 +208,7 @@ class AbstractConfigTest extends TestCase
         $this->assertFalse($this->config->has('not_exist'));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::has() */
+    /** @covers \Camoo\Config\AbstractConfig::has() */
     public function testHasNestedKey()
     {
         $this->assertTrue($this->config->has('application.name'));
@@ -217,14 +217,14 @@ class AbstractConfigTest extends TestCase
         $this->assertFalse($this->config->has('not_exist.name'));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::has() */
+    /** @covers \Camoo\Config\AbstractConfig::has() */
     public function testHasCache()
     {
         $this->assertTrue($this->config->has('application.name'));
         $this->assertTrue($this->config->has('application.name'));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::all() */
+    /** @covers \Camoo\Config\AbstractConfig::all() */
     public function testAll()
     {
         $all = [
@@ -245,7 +245,7 @@ class AbstractConfigTest extends TestCase
         $this->assertSame($all, $this->config->all());
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::merge() */
+    /** @covers \Camoo\Config\AbstractConfig::merge() */
     public function testMerge()
     {
         $remote = new SimpleConfig(
@@ -261,45 +261,45 @@ class AbstractConfigTest extends TestCase
         $this->assertSame('127.0.0.1', $this->config['host']);
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::offsetGet() */
+    /** @covers \Camoo\Config\AbstractConfig::offsetGet() */
     public function testOffsetGet()
     {
         $this->assertSame('localhost', $this->config['host']);
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::offsetGet() */
+    /** @covers \Camoo\Config\AbstractConfig::offsetGet() */
     public function testOffsetGetNestedKey()
     {
         $this->assertSame('configuration', $this->config['application.name']);
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::offsetExists() */
+    /** @covers \Camoo\Config\AbstractConfig::offsetExists() */
     public function testOffsetExists()
     {
         $this->assertTrue(isset($this->config['host']));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::offsetExists() */
+    /** @covers \Camoo\Config\AbstractConfig::offsetExists() */
     public function testOffsetExistsReturnsFalseOnNonexistentKey()
     {
         $this->assertFalse(isset($this->config['database']));
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::offsetSet() */
+    /** @covers \Camoo\Config\AbstractConfig::offsetSet() */
     public function testOffsetSet()
     {
         $this->config['newkey'] = 'newvalue';
         $this->assertSame('newvalue', $this->config['newkey']);
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::offsetUnset() */
+    /** @covers \Camoo\Config\AbstractConfig::offsetUnset() */
     public function testOffsetUnset()
     {
         unset($this->config['application']);
         $this->assertNull($this->config['application']);
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::current() */
+    /** @covers \Camoo\Config\AbstractConfig::current() */
     public function testCurrent()
     {
         /* Reset to the beginning of the test config */
@@ -321,7 +321,7 @@ class AbstractConfigTest extends TestCase
         $this->assertFalse($this->config->current());
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::key() */
+    /** @covers \Camoo\Config\AbstractConfig::key() */
     public function testKey()
     {
         /* Reset to the beginning of the test config */
@@ -343,7 +343,7 @@ class AbstractConfigTest extends TestCase
         $this->assertNull($this->config->key());
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::next() */
+    /** @covers \Camoo\Config\AbstractConfig::next() */
     public function testNext()
     {
         /* Reset to the beginning of the test config */
@@ -360,7 +360,7 @@ class AbstractConfigTest extends TestCase
         $this->assertNull($this->config['user']);
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::rewind() */
+    /** @covers \Camoo\Config\AbstractConfig::rewind() */
     public function testRewind()
     {
         /* Rewind from somewhere out in the array */
@@ -373,7 +373,7 @@ class AbstractConfigTest extends TestCase
         $this->assertSame($this->config['host'], 'localhost');
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::valid() */
+    /** @covers \Camoo\Config\AbstractConfig::valid() */
     public function testValid()
     {
         /* Reset to the beginning of the test config */
@@ -399,11 +399,11 @@ class AbstractConfigTest extends TestCase
      * Tests to verify that Iterator is properly implemented by using a foreach
      * loop on the test config
      *
-     * @covers \Noodlehaus\Config::current()
-     * @covers \Noodlehaus\Config::next()
-     * @covers \Noodlehaus\Config::key()
-     * @covers \Noodlehaus\Config::valid()
-     * @covers \Noodlehaus\Config::rewind()
+     * @covers \Camoo\Config\Config::current()
+     * @covers \Camoo\Config\Config::next()
+     * @covers \Camoo\Config\Config::key()
+     * @covers \Camoo\Config\Config::valid()
+     * @covers \Camoo\Config\Config::rewind()
      */
     public function testIterator()
     {
@@ -430,7 +430,7 @@ class AbstractConfigTest extends TestCase
         }
     }
 
-    /** @covers \Noodlehaus\Config::get() */
+    /** @covers \Camoo\Config\Config::get() */
     public function testGetShouldNotSet()
     {
         $this->config->get('invalid', 'default');
@@ -438,7 +438,7 @@ class AbstractConfigTest extends TestCase
         $this->assertSame('expected', $actual);
     }
 
-    /** @covers \Noodlehaus\AbstractConfig::remove() */
+    /** @covers \Camoo\Config\AbstractConfig::remove() */
     public function testRemove()
     {
         $this->config->remove('application');

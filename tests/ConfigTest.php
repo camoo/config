@@ -1,11 +1,13 @@
 <?php
 
-namespace Noodlehaus\Test;
+namespace Camoo\Config\Test;
 
-use Noodlehaus\Config;
-use Noodlehaus\Parser\Json as JsonParser;
-use Noodlehaus\Parser\Php;
-use Noodlehaus\Writer\Json as JsonWriter;
+use Camoo\Config\Config;
+use Camoo\Config\Exception\EmptyDirectoryException;
+use Camoo\Config\Exception\UnsupportedFormatException;
+use Camoo\Config\Parser\Json as JsonParser;
+use Camoo\Config\Parser\Php;
+use Camoo\Config\Writer\Json as JsonWriter;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -13,8 +15,19 @@ use PHPUnit\Framework\TestCase;
  */
 class ConfigTest extends TestCase
 {
-    /** @var Config */
-    protected $config;
+    protected Config $config;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        mkdir(__DIR__ . '/mocks/empty/unit_test', 0777, true);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        rmdir(__DIR__ . '/mocks/empty/unit_test');
+    }
 
     /**
      * @covers Config::load()
@@ -23,7 +36,7 @@ class ConfigTest extends TestCase
      */
     public function testLoadWithUnsupportedFormat()
     {
-        $this->expectException(\Noodlehaus\Exception\UnsupportedFormatException::class);
+        $this->expectException(UnsupportedFormatException::class);
         $this->expectExceptionMessage('Unsupported configuration format');
         $config = Config::load(__DIR__ . '/mocks/fail/error.lib');
         // $this->markTestIncomplete('Not yet implemented');
@@ -36,7 +49,7 @@ class ConfigTest extends TestCase
      */
     public function testConstructWithUnsupportedFormat()
     {
-        $this->expectException(\Noodlehaus\Exception\UnsupportedFormatException::class);
+        $this->expectException(UnsupportedFormatException::class);
         $this->expectExceptionMessage('Unsupported configuration format');
         $config = new Config(__DIR__ . '/mocks/fail/error.lib');
     }
@@ -50,7 +63,7 @@ class ConfigTest extends TestCase
      */
     public function testConstructWithInvalidPath()
     {
-        $this->expectException(\Noodlehaus\Exception\FileNotFoundException::class);
+        $this->expectException(\Camoo\Config\Exception\FileNotFoundException::class);
         $this->expectExceptionMessage('Configuration file: [ladadeedee] cannot be found');
         $config = new Config('ladadeedee');
     }
@@ -64,8 +77,8 @@ class ConfigTest extends TestCase
      */
     public function testConstructWithEmptyDirectory()
     {
-        $this->expectException(\Noodlehaus\Exception\EmptyDirectoryException::class);
-        $config = new Config(__DIR__ . '/mocks/empty');
+        $this->expectException(EmptyDirectoryException::class);
+        new Config(__DIR__ . '/mocks/empty/unit_test');
     }
 
     /**
@@ -95,7 +108,7 @@ class ConfigTest extends TestCase
      */
     public function testConstructWithArrayWithNonexistentFile()
     {
-        $this->expectException(\Noodlehaus\Exception\FileNotFoundException::class);
+        $this->expectException(\Camoo\Config\Exception\FileNotFoundException::class);
         $paths = [__DIR__ . '/mocks/pass/config.xml', __DIR__ . '/mocks/pass/config3.json'];
         $config = new Config($paths);
 
@@ -246,7 +259,7 @@ class ConfigTest extends TestCase
      *
      * @dataProvider specialConfigProvider()
      */
-    public function testGetReturnsArrayMergedArray($config)
+    public function testGetReturnsArrayMergedArray(Config $config)
     {
         $this->assertCount(4, $config->get('servers'));
     }
@@ -276,7 +289,7 @@ class ConfigTest extends TestCase
     }
 
     /** Provides names of example configuration files */
-    public function configProvider()
+    public function configProvider(): array
     {
         return array_merge(
             [
@@ -291,7 +304,7 @@ class ConfigTest extends TestCase
     }
 
     /** Provides names of example configuration files (for array and directory) */
-    public function specialConfigProvider()
+    public function specialConfigProvider(): array
     {
         return [
             [

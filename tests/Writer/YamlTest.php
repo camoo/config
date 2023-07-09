@@ -1,8 +1,9 @@
 <?php
 
-namespace Noodlehaus\Test\Writer;
+namespace Camoo\Config\Test\Writer;
 
-use Noodlehaus\Writer\Yaml;
+use Camoo\Config\Enum\Writer;
+use Camoo\Config\Writer\Yaml;
 use PHPUnit\Framework\TestCase;
 
 class YamlTest extends TestCase
@@ -39,15 +40,15 @@ class YamlTest extends TestCase
         ];
     }
 
-    /** @covers \Noodlehaus\Writer\Yaml::getSupportedExtensions() */
+    /** @covers \Camoo\Config\Writer\Yaml::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
-        $expected = ['yaml'];
+        $expected = [Writer::YAML, Writer::YML];
         $actual = $this->writer->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
-    /** @covers \Noodlehaus\Writer\Yaml::toString() */
+    /** @covers \Camoo\Config\Writer\Yaml::toString() */
     public function testEncodeYaml()
     {
         $actual = $this->writer->toString($this->data);
@@ -67,8 +68,8 @@ EOD;
     }
 
     /**
-     * @covers \Noodlehaus\Writer\Yaml::toString()
-     * @covers \Noodlehaus\Writer\Yaml::toFile()
+     * @covers \Camoo\Config\Writer\Yaml::toString()
+     * @covers \Camoo\Config\Writer\Yaml::toFile()
      */
     public function testWriteYaml()
     {
@@ -78,12 +79,12 @@ EOD;
     }
 
     /**
-     * @covers \Noodlehaus\Writer\Yaml::toString()
-     * @covers \Noodlehaus\Writer\Yaml::toFile()
+     * @covers \Camoo\Config\Writer\Yaml::toString()
+     * @covers \Camoo\Config\Writer\Yaml::toFile()
      */
     public function testUnwritableFile()
     {
-        $this->expectException(\Noodlehaus\Exception\WriteException::class);
+        $this->expectException(\Camoo\Config\Exception\WriteException::class);
         $this->expectExceptionMessage('There was an error writing the file');
         chmod($this->temp_file, 0444);
 

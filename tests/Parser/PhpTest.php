@@ -1,8 +1,9 @@
 <?php
 
-namespace Noodlehaus\Test\Parser;
+namespace Camoo\Config\Test\Parser;
 
-use Noodlehaus\Parser\Php;
+use Camoo\Config\Enum\Parser;
+use Camoo\Config\Parser\Php;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,49 +23,49 @@ class PhpTest extends TestCase
         $this->php = new Php();
     }
 
-    /** @covers \Noodlehaus\Parser\Php::getSupportedExtensions() */
+    /** @covers \Camoo\Config\Parser\Php::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
-        $expected = ['php'];
+        $expected = [Parser::PHP];
         $actual = $this->php->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Php::parseFile()
-     * @covers \Noodlehaus\Parser\Php::parse()
+     * @covers \Camoo\Config\Parser\Php::parseFile()
+     * @covers \Camoo\Config\Parser\Php::parse()
      */
     public function testLoadInvalidPhp()
     {
-        $this->expectException(\Noodlehaus\Exception\UnsupportedFormatException::class);
+        $this->expectException(\Camoo\Config\Exception\UnsupportedFormatException::class);
         $this->expectExceptionMessage('PHP data does not return an array');
         $this->php->parseFile(__DIR__ . '/../mocks/fail/null.php');
     }
 
-    /** @covers \Noodlehaus\Parser\Php::parseFile() */
+    /** @covers \Camoo\Config\Parser\Php::parseFile() */
     public function testLoadExceptionalPhpFile()
     {
-        $this->expectException(\Noodlehaus\Exception\ParseException::class);
+        $this->expectException(\Camoo\Config\Exception\ParseException::class);
         $this->expectExceptionMessage('PHP file threw an exception');
         $this->php->parseFile(__DIR__ . '/../mocks/fail/error-exception.php');
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Php::parseString()
-     * @covers \Noodlehaus\Parser\Php::isolate()
+     * @covers \Camoo\Config\Parser\Php::parseString()
+     * @covers \Camoo\Config\Parser\Php::isolate()
      */
     public function testLoadExceptionalPhpString()
     {
-        $this->expectException(\Noodlehaus\Exception\ParseException::class);
+        $this->expectException(\Camoo\Config\Exception\ParseException::class);
         $this->expectExceptionMessage('PHP string threw an exception');
         $this->php->parseString(file_get_contents(__DIR__ . '/../mocks/fail/error-exception.php'));
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Php::parseFile()
-     * @covers \Noodlehaus\Parser\Php::parseString()
-     * @covers \Noodlehaus\Parser\Php::isolate()
-     * @covers \Noodlehaus\Parser\Php::parse()
+     * @covers \Camoo\Config\Parser\Php::parseFile()
+     * @covers \Camoo\Config\Parser\Php::parseString()
+     * @covers \Camoo\Config\Parser\Php::isolate()
+     * @covers \Camoo\Config\Parser\Php::parse()
      */
     public function testLoadPhpArray()
     {
@@ -79,10 +80,10 @@ class PhpTest extends TestCase
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Php::parseFile()
-     * @covers \Noodlehaus\Parser\Php::parseString()
-     * @covers \Noodlehaus\Parser\Php::isolate()
-     * @covers \Noodlehaus\Parser\Php::parse()
+     * @covers \Camoo\Config\Parser\Php::parseFile()
+     * @covers \Camoo\Config\Parser\Php::parseString()
+     * @covers \Camoo\Config\Parser\Php::isolate()
+     * @covers \Camoo\Config\Parser\Php::parse()
      */
     public function testLoadPhpCallable()
     {
@@ -97,10 +98,10 @@ class PhpTest extends TestCase
     }
 
     /**
-     * @covers \Noodlehaus\Parser\Php::parseFile()
-     * @covers \Noodlehaus\Parser\Php::parseString()
-     * @covers \Noodlehaus\Parser\Php::isolate()
-     * @covers \Noodlehaus\Parser\Php::parse()
+     * @covers \Camoo\Config\Parser\Php::parseFile()
+     * @covers \Camoo\Config\Parser\Php::parseString()
+     * @covers \Camoo\Config\Parser\Php::isolate()
+     * @covers \Camoo\Config\Parser\Php::parse()
      */
     public function testLoadPhpVariable()
     {

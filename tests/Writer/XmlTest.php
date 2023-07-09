@@ -1,8 +1,9 @@
 <?php
 
-namespace Noodlehaus\Test\Writer;
+namespace Camoo\Config\Test\Writer;
 
-use Noodlehaus\Writer\Xml;
+use Camoo\Config\Enum\Writer;
+use Camoo\Config\Writer\Xml;
 use PHPUnit\Framework\TestCase;
 
 class XmlTest extends TestCase
@@ -39,17 +40,17 @@ class XmlTest extends TestCase
         ];
     }
 
-    /** @covers \Noodlehaus\Writer\Xml::getSupportedExtensions() */
+    /** @covers \Camoo\Config\Writer\Xml::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
-        $expected = ['xml'];
+        $expected = [Writer::XML];
         $actual = $this->writer->getSupportedExtensions();
         $this->assertSame($expected, $actual);
     }
 
     /**
-     * @covers \Noodlehaus\Writer\Xml::toString()
-     * @covers \Noodlehaus\Writer\Xml::toXML()
+     * @covers \Camoo\Config\Writer\Xml::toString()
+     * @covers \Camoo\Config\Writer\Xml::toXML()
      */
     public function testEncodeXml()
     {
@@ -63,9 +64,9 @@ EOD;
     }
 
     /**
-     * @covers \Noodlehaus\Writer\Xml::toFile()
-     * @covers \Noodlehaus\Writer\Xml::toString()
-     * @covers \Noodlehaus\Writer\Xml::toXML()
+     * @covers \Camoo\Config\Writer\Xml::toFile()
+     * @covers \Camoo\Config\Writer\Xml::toString()
+     * @covers \Camoo\Config\Writer\Xml::toXML()
      */
     public function testWriteXml()
     {
@@ -76,12 +77,12 @@ EOD;
     }
 
     /**
-     * @covers \Noodlehaus\Writer\Xml::toFile()
-     * @covers \Noodlehaus\Writer\Xml::toXML()
+     * @covers \Camoo\Config\Writer\Xml::toFile()
+     * @covers \Camoo\Config\Writer\Xml::toXML()
      */
     public function testUnwritableFile()
     {
-        $this->expectException(\Noodlehaus\Exception\WriteException::class);
+        $this->expectException(\Camoo\Config\Exception\WriteException::class);
         $this->expectExceptionMessage('There was an error writing the file');
         chmod($this->temp_file, 0444);
 

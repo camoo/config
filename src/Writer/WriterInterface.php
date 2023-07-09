@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus\Writer;
+namespace Camoo\Config\Writer;
 
-use Noodlehaus\Exception\WriteException;
+use Camoo\Config\Exception\WriteException;
 
 /**
  * Config file parser interface.
@@ -27,13 +27,9 @@ interface WriterInterface
      */
     public function toFile(array $config, string $filename): string;
 
-    /**
-     * Writes a configuration from `$config` to a string.
-     */
+    /** Writes a configuration from `$config` to a string. */
     public function toString(array $config, bool $pretty = true): string;
 
-    /**
-     * Returns an array of allowed file extensions for this writer.
-     */
-    public static function getSupportedExtensions(): array;
+    /** Returns an array of allowed file extensions for this writer. */
+    public function getSupportedExtensions(): array;
 }

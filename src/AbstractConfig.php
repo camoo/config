@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus;
+namespace Camoo\Config;
 
 use ArrayAccess;
 use Iterator;
@@ -108,9 +108,7 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
         return true;
     }
 
-    /**
-     * Merge config from another instance
-     */
+    /** Merge config from another instance */
     public function merge(ConfigInterface $config): self
     {
         $this->data = array_replace_recursive($this->data, $config->all());

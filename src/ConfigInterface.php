@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Noodlehaus;
+namespace Camoo\Config;
 
 /**
  * Config interface
@@ -37,8 +37,6 @@ interface ConfigInterface
      */
     public function has(string $key): bool;
 
-    /**
-     * Get all of the configuration items
-     */
+    /** Get all of the configuration items */
     public function all(): array;
 }

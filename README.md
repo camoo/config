@@ -3,6 +3,15 @@
 Config is a file configuration loader that supports PHP, INI, XML, JSON,
 YML, Properties and serialized files and strings.
 
+<p align="center">
+    <a href="https://github.com/camoo/config" target="_blank">
+        <img alt="Build Status" src="https://github.com/camoo/config/actions/workflows/continuous-integration.yml/badge.svg">
+    </a>
+	<a href="https://codecov.io/gh/camoo/config">
+  		<img alt="camoo-badge" src="https://codecov.io/gh/camoo/config/branch/main/graph/badge.svg" />
+	</a>
+</p>
+
 ## Requirements
 
 Config requires PHP 8.1+.

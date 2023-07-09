@@ -28,6 +28,8 @@ use SplFileInfo;
  */
 class Config extends AbstractConfig
 {
+    private const DIST_EXTENSION = 'dist';
+
     /**
      * Loads a Config instance.
      *
@@ -68,29 +70,31 @@ class Config extends AbstractConfig
      */
     public function toFile(string $filename, ?WriterInterface $writer = null): void
     {
-        if ($writer === null) {
-            // Get file information
-            $info = pathinfo($filename);
-            $parts = explode('.', $info['basename']);
-            $extension = array_pop($parts);
-
-            // Skip the `dist` extension
-            if ($extension === 'dist') {
-                $extension = array_pop($parts);
-            }
-
-            // Get file writer
-            $writer = $this->getWriter($extension);
-
-            // Try to save file
-            $writer->toFile($this->all(), $filename);
-
-            // Clean writer
-            $writer = null;
-        } else {
+        if ($writer instanceof WriterInterface) {
             // Try to load file using specified writer
             $writer->toFile($this->all(), $filename);
+
+            return;
         }
+
+        // Get file information
+        $info = pathinfo($filename);
+        $parts = explode('.', $info['basename']);
+        $extension = array_pop($parts);
+
+        // Skip the `dist` extension
+        if ($extension === self::DIST_EXTENSION) {
+            $extension = array_pop($parts);
+        }
+
+        // Get file writer
+        $writer = $this->getWriter($extension);
+
+        // Try to save file
+        $writer->toFile($this->all(), $filename);
+
+        // Clean writer
+        $writer = null;
     }
 
     /**
@@ -123,31 +127,33 @@ class Config extends AbstractConfig
 
             $path = is_string($fileInfo) ? $fileInfo : $fileInfo->getPathname();
 
-            if ($parser === null) {
-                // Get file information
-                $info = is_string($fileInfo) ? pathinfo($path) : null;
-                $basename = $fileInfo instanceof SplFileInfo ? $fileInfo->getBasename() : $info['basename'];
-                $parts = explode('.', $basename);
-
-                $extension = $fileInfo instanceof SplFileInfo ? $fileInfo->getExtension() : array_pop($parts);
-
-                // Skip the `dist` extension
-                if ($extension === 'dist') {
-                    $extension = array_pop($parts);
-                }
-
-                // Get file parser
-                $parser = $this->getParser($extension);
-
-                // Try to load file
-                $this->data = array_replace_recursive($this->data, $parser->parseFile($path));
-
-                // Clean parser
-                $parser = null;
-            } else {
+            if ($parser instanceof ParserInterface) {
                 // Try to load file using specified parser
                 $this->data = array_replace_recursive($this->data, $parser->parseFile($path));
+                ++$loaded;
+                continue;
             }
+
+            // Get file information
+            $info = is_string($fileInfo) ? pathinfo($path) : null;
+            $basename = $fileInfo instanceof SplFileInfo ? $fileInfo->getBasename() : $info['basename'];
+            $parts = explode('.', $basename);
+
+            $extension = $fileInfo instanceof SplFileInfo ? $fileInfo->getExtension() : array_pop($parts);
+
+            // Skip the `dist` extension
+            if ($extension === self::DIST_EXTENSION) {
+                $extension = array_pop($parts);
+            }
+
+            // Get file parser
+            $parser = $this->getParser($extension);
+
+            // Try to load file
+            $this->data = array_replace_recursive($this->data, $parser->parseFile($path));
+
+            // Clean parser
+            $parser = null;
             ++$loaded;
         }
         if ($loaded === 0) {
@@ -235,14 +241,14 @@ class Config extends AbstractConfig
 
                 $optionalPath = ltrim($unverifiedPath, '?');
                 $paths = array_merge($paths, $this->getValidPath($optionalPath));
-            } catch (FileNotFoundException $e) {
+            } catch (FileNotFoundException $exception) {
                 // If `$unverifiedPath` is optional, then skip it
                 if ($unverifiedPath[0] === '?') {
                     continue;
                 }
 
                 // Otherwise rethrow the exception
-                throw $e;
+                throw $exception;
             }
         }
 

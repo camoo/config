@@ -88,13 +88,4 @@ EOD;
 
         $this->writer->toFile($this->data, $this->temp_file);
     }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tear_down()
-    {
-        // unlink($this->temp_file);
-    }
 }

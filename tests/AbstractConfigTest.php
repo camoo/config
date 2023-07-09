@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 class AbstractConfigTest extends TestCase
 {
     /** @var \Camoo\Config\Config */
-    protected $config;
+    protected SimpleConfig|\Camoo\Config\Config $config;
 
     /**
      * Sets up the fixture, for example, opens a network connection.

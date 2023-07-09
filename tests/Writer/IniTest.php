@@ -37,6 +37,15 @@ class IniTest extends TestCase
         ];
     }
 
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown(): void
+    {
+        unlink($this->temp_file);
+    }
+
     /** @covers \Camoo\Config\Writer\Ini::getSupportedExtensions() */
     public function testGetSupportedExtensions()
     {
@@ -89,14 +98,5 @@ EOD;
         chmod($this->temp_file, 0444);
 
         $this->writer->toFile($this->data, $this->temp_file);
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tear_down()
-    {
-        unlink($this->temp_file);
     }
 }

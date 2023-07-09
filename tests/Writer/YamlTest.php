@@ -8,14 +8,11 @@ use PHPUnit\Framework\TestCase;
 
 class YamlTest extends TestCase
 {
-    /** @var Yaml */
-    protected $writer;
+    protected Yaml $writer;
 
-    /** @var string */
-    protected $temp_file;
+    protected string|false $temp_file;
 
-    /** @var array */
-    protected $data;
+    protected array $data;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -38,6 +35,15 @@ class YamlTest extends TestCase
                 'host3',
             ],
         ];
+    }
+
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown(): void
+    {
+        unlink($this->temp_file);
     }
 
     /** @covers \Camoo\Config\Writer\Yaml::getSupportedExtensions() */
@@ -89,14 +95,5 @@ EOD;
         chmod($this->temp_file, 0444);
 
         $this->writer->toFile($this->data, $this->temp_file);
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tear_down()
-    {
-        unlink($this->temp_file);
     }
 }

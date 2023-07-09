@@ -1,21 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Camoo\Config\Test\Writer;
 
 use Camoo\Config\Enum\Writer;
+use Camoo\Config\Exception\WriteException;
 use Camoo\Config\Writer\Properties;
 use PHPUnit\Framework\TestCase;
 
 class PropertiesTest extends TestCase
 {
-    /** @var Properties */
-    protected $writer;
+    protected Properties $writer;
 
-    /** @var string */
-    protected $temp_file;
+    protected string|false $temp_file;
 
-    /** @var array */
-    protected $data;
+    protected array $data;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -94,10 +94,22 @@ EOD;
      */
     public function testUnwritableFile()
     {
-        $this->expectException(\Camoo\Config\Exception\WriteException::class);
+        $this->expectException(WriteException::class);
         $this->expectExceptionMessage('There was an error writing the file');
         chmod($this->temp_file, 0444);
 
         $this->writer->toFile($this->data, $this->temp_file);
+    }
+
+    /**
+     * @covers \Camoo\Config\Writer\Properties::toString()
+     * @covers \Camoo\Config\Writer\Properties::toProperties()
+     */
+    public function testToStringWithArrayReturnsEmptyString(): void
+    {
+        $data = [
+            ['unit' => 'test'],
+        ];
+        $this->assertSame('', $this->writer->toString($data));
     }
 }

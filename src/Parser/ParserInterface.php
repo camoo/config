@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Camoo\Config\Parser;
 
+use Camoo\Config\Exception\ParseException;
+
 /**
  * Config file parser interface
  *
@@ -20,12 +22,16 @@ interface ParserInterface
     /**
      * Parses a configuration from file `$filename` and gets its contents as an array
      *
+     * @throws ParseException
+     *
      * @return array
      */
     public function parseFile(string $filename): ?array;
 
     /**
      * Parses a configuration from string `$config` and gets its contents as an array
+     *
+     * @throws ParseException
      *
      * @return array
      */

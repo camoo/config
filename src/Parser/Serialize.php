@@ -35,15 +35,10 @@ class Serialize implements ParserInterface
     /**
      * Completes parsing of JSON data
      *
-     * @param string $data
-     *
      * @throws ParseException If there is an error parsing the serialized data
      */
-    protected function parse(?string $data = null): ?array
+    protected function parse(string|bool $data): ?array
     {
-        if (null === $data) {
-            return null;
-        }
         $serializedData = @unserialize($data);
         if ($serializedData === false) {
             throw new ParseException(error_get_last());

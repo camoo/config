@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Camoo\Config\Test\Parser;
 
 use Camoo\Config\Enum\Parser;
+use Camoo\Config\Exception\ParseException;
 use Camoo\Config\Parser\Serialize;
 use PHPUnit\Framework\TestCase;
 
@@ -11,8 +14,7 @@ use PHPUnit\Framework\TestCase;
  */
 class SerializeTest extends TestCase
 {
-    /** @var Serialize */
-    protected $serialize;
+    protected ?Serialize $serialize;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -21,6 +23,12 @@ class SerializeTest extends TestCase
     protected function setUp(): void
     {
         $this->serialize = new Serialize();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->serialize = null;
     }
 
     /** @covers \Camoo\Config\Parser\Serialize::getSupportedExtensions() */
@@ -37,7 +45,7 @@ class SerializeTest extends TestCase
      */
     public function testLoadInvalidSerialize()
     {
-        $this->expectException(\Camoo\Config\Exception\ParseException::class);
+        $this->expectException(ParseException::class);
         $this->expectExceptionMessage('unserialize(): Error at offset 57 of 58 bytes');
         $this->serialize->parseFile(__DIR__ . '/../mocks/fail/error.txt');
     }

@@ -58,16 +58,12 @@ class Xml implements ParserInterface
     /**
      * Completes parsing of XML data
      *
-     * @param SimpleXMLElement|null $data
-     * @param string                $filename
+     * @param SimpleXMLElement|bool $data
      *
      * @throws ParseException If there is an error parsing the XML data
      */
-    protected function parse(SimpleXMLElement|bool|null $data = null, ?string $filename = null): ?array
+    protected function parse(SimpleXMLElement|bool $data = null, ?string $filename = null): ?array
     {
-        if ($data === null) {
-            return null;
-        }
         if ($data === false) {
             $errors = libxml_get_errors();
             $latestError = array_pop($errors);

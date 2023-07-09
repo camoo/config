@@ -215,10 +215,11 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
     /**
      * Moves the data array's internal cursor to the first element
      *
-     * @return mixed The element referenced by the data array's internal cursor
-     *               after the move is completed. If the data array is empty, the function
-     *               returns false. If the data array is undefined, the function returns
-     *               null
+     * @return void
+     *              The element referenced by the data array's internal cursor
+     *              after the move is completed. If the data array is empty, the function
+     *              returns false. If the data array is undefined, the function returns
+     *              null
      */
     public function rewind(): void
     {

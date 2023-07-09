@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Camoo\Config\Test;
 
+use Camoo\Config\Config;
 use Camoo\Config\Test\Fixture\SimpleConfig;
 use PHPUnit\Framework\TestCase;
 
@@ -10,8 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 class AbstractConfigTest extends TestCase
 {
-    /** @var \Camoo\Config\Config */
-    protected SimpleConfig|\Camoo\Config\Config $config;
+    protected SimpleConfig|Config $config;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -443,5 +445,17 @@ class AbstractConfigTest extends TestCase
     {
         $this->config->remove('application');
         $this->assertNull($this->config['application']);
+    }
+
+    /**
+     * @covers \Camoo\Config\AbstractConfig::next
+     * @covers \Camoo\Config\AbstractConfig::rewind
+     */
+    public function testCannotRewindAndNextWhenDataIsEmpty(): void
+    {
+        $config = new SimpleConfig([]);
+
+        $this->assertNull($config->next());
+        $this->assertNull($config->rewind());
     }
 }

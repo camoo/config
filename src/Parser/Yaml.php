@@ -74,8 +74,6 @@ class Yaml implements ParserInterface
 
     /**
      * Completes parsing of YAML/YML data
-     *
-     * @param array $data
      */
     protected function parse(?array $data = null): ?array
     {

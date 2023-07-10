@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Camoo\Config\Test;
 
+use Camoo\Config\AbstractConfig;
 use Camoo\Config\Config;
 use Camoo\Config\Test\Fixture\SimpleConfig;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  */
 class AbstractConfigTest extends TestCase
 {
-    protected SimpleConfig|Config $config;
+    private SimpleConfig|Config|null $config;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -40,11 +41,17 @@ class AbstractConfigTest extends TestCase
         );
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->config = null;
+    }
+
     /**
      * @covers \Camoo\Config\AbstractConfig::__construct()
      * @covers \Camoo\Config\AbstractConfig::getDefaults()
      */
-    public function testDefaultOptionsSetOnInstantiation()
+    public function testDefaultOptionsSetOnInstantiation(): void
     {
         $config = new SimpleConfig(
             [
@@ -57,43 +64,43 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\AbstractConfig::get() */
-    public function testGet()
+    public function testGet(): void
     {
         $this->assertSame('localhost', $this->config->get('host'));
     }
 
     /** @covers \Camoo\Config\AbstractConfig::get() */
-    public function testGetWithDefaultValue()
+    public function testGetWithDefaultValue(): void
     {
         $this->assertSame(128, $this->config->get('ttl', 128));
     }
 
     /** @covers \Camoo\Config\AbstractConfig::get() */
-    public function testGetNestedKey()
+    public function testGetNestedKey(): void
     {
         $this->assertSame('configuration', $this->config->get('application.name'));
     }
 
     /** @covers \Camoo\Config\AbstractConfig::get() */
-    public function testGetNestedKeyWithDefaultValue()
+    public function testGetNestedKeyWithDefaultValue(): void
     {
         $this->assertSame(128, $this->config->get('application.ttl', 128));
     }
 
     /** @covers \Camoo\Config\AbstractConfig::get() */
-    public function testGetNonexistentKey()
+    public function testGetNonexistentKey(): void
     {
         $this->assertNull($this->config->get('proxy'));
     }
 
     /** @covers \Camoo\Config\AbstractConfig::get() */
-    public function testGetNonexistentNestedKey()
+    public function testGetNonexistentNestedKey(): void
     {
         $this->assertNull($this->config->get('proxy.name'));
     }
 
     /** @covers \Camoo\Config\AbstractConfig::get() */
-    public function testGetReturnsArray()
+    public function testGetReturnsArray(): void
     {
         $this->assertArrayHasKey('name', $this->config->get('application'));
         $this->assertSame('configuration', $this->config->get('application.name'));
@@ -101,21 +108,21 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\AbstractConfig::set() */
-    public function testSet()
+    public function testSet(): void
     {
         $this->config->set('region', 'apac');
         $this->assertSame('apac', $this->config->get('region'));
     }
 
     /** @covers \Camoo\Config\AbstractConfig::set() */
-    public function testSetNestedKey()
+    public function testSetNestedKey(): void
     {
         $this->config->set('location.country', 'Singapore');
         $this->assertSame('Singapore', $this->config->get('location.country'));
     }
 
     /** @covers \Camoo\Config\AbstractConfig::set() */
-    public function testSetArray()
+    public function testSetArray(): void
     {
         $this->config->set('database', [
             'host' => 'localhost',
@@ -126,7 +133,7 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\AbstractConfig::set() */
-    public function testCacheWithNestedArray()
+    public function testCacheWithNestedArray(): void
     {
         $this->config->set('database', [
             'host' => 'localhost',
@@ -166,7 +173,7 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\AbstractConfig::set() */
-    public function testCacheWithNestedMiddleArray()
+    public function testCacheWithNestedMiddleArray(): void
     {
         $this->config->set('config', [
             'database' => [
@@ -188,7 +195,7 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\AbstractConfig::set() */
-    public function testSetAndUnsetArray()
+    public function testSetAndUnsetArray(): void
     {
         $this->config->set('database', [
             'host' => 'localhost',
@@ -203,7 +210,7 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\AbstractConfig::has() */
-    public function testHas()
+    public function testHas(): void
     {
         $this->assertTrue($this->config->has('application'));
         $this->assertTrue($this->config->has('user'));
@@ -211,7 +218,7 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\AbstractConfig::has() */
-    public function testHasNestedKey()
+    public function testHasNestedKey(): void
     {
         $this->assertTrue($this->config->has('application.name'));
         $this->assertTrue($this->config->has('application.runtime'));
@@ -220,14 +227,14 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\AbstractConfig::has() */
-    public function testHasCache()
+    public function testHasCache(): void
     {
         $this->assertTrue($this->config->has('application.name'));
         $this->assertTrue($this->config->has('application.name'));
     }
 
     /** @covers \Camoo\Config\AbstractConfig::all() */
-    public function testAll()
+    public function testAll(): void
     {
         $all = [
             'host' => 'localhost',
@@ -248,7 +255,7 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\AbstractConfig::merge() */
-    public function testMerge()
+    public function testMerge(): void
     {
         $remote = new SimpleConfig(
             [
@@ -264,45 +271,45 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\AbstractConfig::offsetGet() */
-    public function testOffsetGet()
+    public function testOffsetGet(): void
     {
         $this->assertSame('localhost', $this->config['host']);
     }
 
     /** @covers \Camoo\Config\AbstractConfig::offsetGet() */
-    public function testOffsetGetNestedKey()
+    public function testOffsetGetNestedKey(): void
     {
         $this->assertSame('configuration', $this->config['application.name']);
     }
 
     /** @covers \Camoo\Config\AbstractConfig::offsetExists() */
-    public function testOffsetExists()
+    public function testOffsetExists(): void
     {
         $this->assertTrue(isset($this->config['host']));
     }
 
     /** @covers \Camoo\Config\AbstractConfig::offsetExists() */
-    public function testOffsetExistsReturnsFalseOnNonexistentKey()
+    public function testOffsetExistsReturnsFalseOnNonexistentKey(): void
     {
         $this->assertFalse(isset($this->config['database']));
     }
 
     /** @covers \Camoo\Config\AbstractConfig::offsetSet() */
-    public function testOffsetSet()
+    public function testOffsetSet(): void
     {
         $this->config['newkey'] = 'newvalue';
         $this->assertSame('newvalue', $this->config['newkey']);
     }
 
     /** @covers \Camoo\Config\AbstractConfig::offsetUnset() */
-    public function testOffsetUnset()
+    public function testOffsetUnset(): void
     {
         unset($this->config['application']);
         $this->assertNull($this->config['application']);
     }
 
     /** @covers \Camoo\Config\AbstractConfig::current() */
-    public function testCurrent()
+    public function testCurrent(): void
     {
         /* Reset to the beginning of the test config */
         $this->config->rewind();
@@ -324,7 +331,7 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\AbstractConfig::key() */
-    public function testKey()
+    public function testKey(): void
     {
         /* Reset to the beginning of the test config */
         $this->config->rewind();
@@ -346,14 +353,14 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\AbstractConfig::next() */
-    public function testNext()
+    public function testNext(): void
     {
         /* Reset to the beginning of the test config */
         $this->config->rewind();
 
         /* Step through each of the other elements of the test config */
         $this->config->next();
-        $this->assertSame($this->config['port'], 80);
+        $this->assertSame(80, $this->config['port']);
         $this->config->next();
         $this->assertSame($this->config['servers'], ['host1', 'host2', 'host3']);
         $this->config->next();
@@ -363,7 +370,7 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\AbstractConfig::rewind() */
-    public function testRewind()
+    public function testRewind(): void
     {
         /* Rewind from somewhere out in the array */
         $this->config->next();
@@ -376,7 +383,7 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\AbstractConfig::valid() */
-    public function testValid()
+    public function testValid(): void
     {
         /* Reset to the beginning of the test config */
         $this->config->rewind();
@@ -407,7 +414,7 @@ class AbstractConfigTest extends TestCase
      * @covers \Camoo\Config\Config::valid()
      * @covers \Camoo\Config\Config::rewind()
      */
-    public function testIterator()
+    public function testIterator(): void
     {
         /* Create numerically indexed copies of the test config */
         $expectedKeys = ['host', 'port', 'servers', 'application', 'user'];
@@ -433,7 +440,7 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\Config::get() */
-    public function testGetShouldNotSet()
+    public function testGetShouldNotSet(): void
     {
         $this->config->get('invalid', 'default');
         $actual = $this->config->get('invalid', 'expected');
@@ -441,7 +448,7 @@ class AbstractConfigTest extends TestCase
     }
 
     /** @covers \Camoo\Config\AbstractConfig::remove() */
-    public function testRemove()
+    public function testRemove(): void
     {
         $this->config->remove('application');
         $this->assertNull($this->config['application']);
@@ -453,9 +460,11 @@ class AbstractConfigTest extends TestCase
      */
     public function testCannotRewindAndNextWhenDataIsEmpty(): void
     {
-        $config = new SimpleConfig([]);
+        $config = new class ([]) extends AbstractConfig {
+        };
 
-        $this->assertNull($config->next());
-        $this->assertNull($config->rewind());
+        $config->next();
+        $config->rewind();
+        $this->assertInstanceOf(AbstractConfig::class, $config);
     }
 }

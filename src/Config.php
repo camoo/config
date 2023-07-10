@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Camoo\Config;
 
-use Camoo\Config\Enum\Parser;
+use Camoo\Config\Command\LoadFromFileCommand;
+use Camoo\Config\Command\LoadFromFileCommandHandler;
 use Camoo\Config\Enum\Writer;
 use Camoo\Config\Exception\EmptyDirectoryException;
 use Camoo\Config\Exception\FileNotFoundException;
@@ -16,7 +17,6 @@ use Camoo\Config\Parser\ParserInterface;
 use Camoo\Config\Writer\WriterFactoryInterface;
 use Camoo\Config\Writer\WriterInterface;
 use DirectoryIterator;
-use SplFileInfo;
 use Stringable;
 use Throwable;
 
@@ -42,8 +42,6 @@ class Config extends AbstractConfig implements Stringable
      *
      * @param string|array                                $values Filenames or string with configuration
      * @param ParserInterface|ParserFactoryInterface|null $parser Configuration parser
-     *
-     * @throws ParseException
      */
     public function __construct(
         private readonly array|string $values,
@@ -137,49 +135,6 @@ class Config extends AbstractConfig implements Stringable
     }
 
     /**
-     * Gets a parser for a given file extension.
-     *
-     * @throws UnsupportedFormatException If `$extension` is an unsupported file format
-     */
-    protected function getParser(string $extension): ParserInterface
-    {
-        foreach (Parser::cases() as $parser) {
-            if (strtoupper($extension) !== $parser->name) {
-                continue;
-            }
-
-            $instance = $parser->getInstance();
-            if (in_array($parser, $instance->getSupportedExtensions(), true)) {
-                return $instance;
-            }
-        }
-
-        // If none exist, then throw an exception
-        throw new UnsupportedFormatException('Unsupported configuration format');
-    }
-
-    /**
-     * Gets a writer for a given file extension.
-     *
-     * @throws UnsupportedFormatException If `$extension` is an unsupported file format
-     */
-    protected function getWriter(string $extension): WriterInterface
-    {
-        foreach (Writer::cases() as $writer) {
-            if (strtoupper($extension) !== $writer->name) {
-                continue;
-            }
-            $instance = $writer->getInstance();
-            if (in_array($writer, $instance->getSupportedExtensions(), true)) {
-                return $instance;
-            }
-        }
-
-        // If none exist, then throw an exception
-        throw new UnsupportedFormatException('Unsupported configuration format' . $extension);
-    }
-
-    /**
      * Gets an array of paths
      *
      * @throws FileNotFoundException If a file is not found at `$path`
@@ -239,6 +194,27 @@ class Config extends AbstractConfig implements Stringable
         return new DirectoryIterator($path);
     }
 
+    /**
+     * Gets a writer for a given file extension.
+     *
+     * @throws UnsupportedFormatException If `$extension` is an unsupported file format
+     */
+    private function getWriter(string $extension): WriterInterface
+    {
+        foreach (Writer::cases() as $writer) {
+            if (strtoupper($extension) !== $writer->name) {
+                continue;
+            }
+            $instance = $writer->getInstance();
+            if (in_array($writer, $instance->getSupportedExtensions(), true)) {
+                return $instance;
+            }
+        }
+
+        // If none exist, then throw an exception
+        throw new UnsupportedFormatException('Unsupported configuration format: .' . $extension);
+    }
+
     /** @throws ParseException */
     private function initialize(
         array|string $values,
@@ -268,51 +244,16 @@ class Config extends AbstractConfig implements Stringable
     private function loadFromFile(array|string $path, ?ParserInterface $parser = null): void
     {
         $paths = $this->getValidPath($path);
-        $this->data = [];
-        $loaded = 0;
-        /** @var SplFileInfo|string $fileInfo */
-        foreach ($paths as $fileInfo) {
-            if ($fileInfo instanceof SplFileInfo && $fileInfo->isDot()) {
-                continue;
-            }
-
-            $path = is_string($fileInfo) ? $fileInfo : $fileInfo->getPathname();
-
-            if ($parser instanceof ParserInterface) {
-                // Try to load file using specified parser
-                $this->data = array_replace_recursive($this->data, $parser->parseFile($path));
-                ++$loaded;
-                continue;
-            }
-
-            // Get file information
-            $info = is_string($fileInfo) ? pathinfo($path) : null;
-            $basename = $fileInfo instanceof SplFileInfo ? $fileInfo->getBasename() : $info['basename'];
-            $parts = explode('.', $basename);
-
-            $extension = $fileInfo instanceof SplFileInfo ? $fileInfo->getExtension() : array_pop($parts);
-
-            // Skip the `dist` extension
-            if ($extension === self::DIST_EXTENSION) {
-                $extension = array_pop($parts);
-            }
-
-            // Get file parser
-            $parser = $this->getParser($extension);
-
-            // Try to load file
-            $this->data = array_replace_recursive($this->data, $parser->parseFile($path));
-            $this->files[] = $path;
-
-            // Clean parser
-            $parser = null;
-            ++$loaded;
-        }
-        if ($loaded === 0) {
+        $command = new LoadFromFileCommand($paths, $parser);
+        $handler = new LoadFromFileCommandHandler();
+        $result = $handler->handle($command);
+        if ($result->loaded === 0) {
             throw new EmptyDirectoryException(
                 sprintf('Directory %s is empty', is_string($path) ? $path : json_encode($path))
             );
         }
+        $this->data = $result->data;
+        $this->files = $result->files;
     }
 
     /**

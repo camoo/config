@@ -13,6 +13,13 @@ use Camoo\Config\Writer\WriterInterface;
 use Camoo\Config\Writer\Xml;
 use Camoo\Config\Writer\Yaml;
 
+/**
+ * @author     Camoo Sarl <config@camoo.sarl>
+ *
+ * @link       https://github.com/camoo/config
+ *
+ * @license    MIT
+ */
 enum Writer implements WriterFactoryInterface
 {
     public function getInstance(): WriterInterface

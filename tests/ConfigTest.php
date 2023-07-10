@@ -324,7 +324,7 @@ class ConfigTest extends TestCase
     public function provideWriterInstance(): array
     {
         return [
-            [null, 'json'],
+            [null, 'json.dist'],
             [Writer::JSON, 'json.dist'],
             [new Json(), 'json'],
         ];

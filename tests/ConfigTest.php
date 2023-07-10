@@ -6,6 +6,7 @@ use Camoo\Config\Config;
 use Camoo\Config\Enum\Parser;
 use Camoo\Config\Enum\Writer;
 use Camoo\Config\Exception\EmptyDirectoryException;
+use Camoo\Config\Exception\FileNotFoundException;
 use Camoo\Config\Exception\UnsupportedFormatException;
 use Camoo\Config\Parser\Json as JsonParser;
 use Camoo\Config\Parser\Php;
@@ -35,38 +36,34 @@ class ConfigTest extends TestCase
     /**
      * @covers Config::load()
      * @covers Config::loadFromFile()
-     * @covers Config::getParser()
      */
-    public function testLoadWithUnsupportedFormat()
+    public function testLoadWithUnsupportedFormat(): void
     {
         $this->expectException(UnsupportedFormatException::class);
         $this->expectExceptionMessage('Unsupported configuration format');
-        $config = Config::load(__DIR__ . '/mocks/fail/error.lib');
-        // $this->markTestIncomplete('Not yet implemented');
+        Config::load(__DIR__ . '/mocks/fail/error.lib');
     }
 
     /**
      * @covers Config::__construct()
      * @covers Config::loadFromFile()
-     * @covers Config::getParser()
      */
-    public function testConstructWithUnsupportedFormat()
+    public function testConstructWithUnsupportedFormat(): void
     {
         $this->expectException(UnsupportedFormatException::class);
         $this->expectExceptionMessage('Unsupported configuration format');
-        $config = new Config(__DIR__ . '/mocks/fail/error.lib');
+        new Config(__DIR__ . '/mocks/fail/error.lib');
     }
 
     /**
      * @covers Config::__construct()
      * @covers Config::loadFromFile()
-     * @covers Config::getParser()
      * @covers Config::getPathFromArray()
      * @covers Config::getValidPath()
      */
-    public function testConstructWithInvalidPath()
+    public function testConstructWithInvalidPath(): void
     {
-        $this->expectException(\Camoo\Config\Exception\FileNotFoundException::class);
+        $this->expectException(FileNotFoundException::class);
         $this->expectExceptionMessage('Configuration file: [ladadeedee] cannot be found');
         $config = new Config('ladadeedee');
     }
@@ -74,11 +71,10 @@ class ConfigTest extends TestCase
     /**
      * @covers Config::__construct()
      * @covers Config::loadFromFile()
-     * @covers Config::getParser()
      * @covers Config::getPathFromArray()
      * @covers Config::getValidPath()
      */
-    public function testConstructWithEmptyDirectory()
+    public function testConstructWithEmptyDirectory(): void
     {
         $this->expectException(EmptyDirectoryException::class);
         new Config(__DIR__ . '/mocks/empty/unit_test');
@@ -87,11 +83,22 @@ class ConfigTest extends TestCase
     /**
      * @covers Config::__construct()
      * @covers Config::loadFromFile()
-     * @covers Config::getParser()
      * @covers Config::getPathFromArray()
      * @covers Config::getValidPath()
      */
-    public function testConstructWithArray()
+    public function testConstructWithDirectoryContainingUnsupportedExtension(): void
+    {
+        $this->expectException(UnsupportedFormatException::class);
+        new Config(__DIR__ . '/mocks/empty/');
+    }
+
+    /**
+     * @covers Config::__construct()
+     * @covers Config::loadFromFile()
+     * @covers Config::getPathFromArray()
+     * @covers Config::getValidPath()
+     */
+    public function testConstructWithArray(): void
     {
         $paths = [__DIR__ . '/mocks/pass/config.xml', __DIR__ . '/mocks/pass/config2.json'];
         $config = new Config($paths);
@@ -105,13 +112,12 @@ class ConfigTest extends TestCase
     /**
      * @covers Config::__construct()
      * @covers Config::loadFromFile()
-     * @covers Config::getParser()
      * @covers Config::getPathFromArray()
      * @covers Config::getValidPath()
      */
-    public function testConstructWithArrayWithNonexistentFile()
+    public function testConstructWithArrayWithNonexistentFile(): void
     {
-        $this->expectException(\Camoo\Config\Exception\FileNotFoundException::class);
+        $this->expectException(FileNotFoundException::class);
         $paths = [__DIR__ . '/mocks/pass/config.xml', __DIR__ . '/mocks/pass/config3.json'];
         $config = new Config($paths);
 
@@ -124,11 +130,10 @@ class ConfigTest extends TestCase
     /**
      * @covers Config::__construct()
      * @covers Config::loadFromFile()
-     * @covers Config::getParser()
      * @covers Config::getPathFromArray()
      * @covers Config::getValidPath()
      */
-    public function testConstructWithArrayWithOptionalFile()
+    public function testConstructWithArrayWithOptionalFile(): void
     {
         $paths = [__DIR__ . '/mocks/pass/config.xml', '?' . __DIR__ . '/mocks/pass/config2.json'];
         $config = new Config($paths);
@@ -142,11 +147,10 @@ class ConfigTest extends TestCase
     /**
      * @covers Config::__construct()
      * @covers Config::loadFromFile()
-     * @covers Config::getParser()
      * @covers Config::getPathFromArray()
      * @covers Config::getValidPath()
      */
-    public function testConstructWithArrayWithOptionalNonexistentFile()
+    public function testConstructWithArrayWithOptionalNonexistentFile(): void
     {
         $paths = [__DIR__ . '/mocks/pass/config.xml', '?' . __DIR__ . '/mocks/pass/config3.json'];
         $config = new Config($paths);
@@ -160,11 +164,10 @@ class ConfigTest extends TestCase
     /**
      * @covers Config::__construct()
      * @covers Config::loadFromFile()
-     * @covers Config::getParser()
      * @covers Config::getPathFromArray()
      * @covers Config::getValidPath()
      */
-    public function testConstructWithDirectory()
+    public function testConstructWithDirectory(): void
     {
         $config = new Config(__DIR__ . '/mocks/dir');
 
@@ -177,12 +180,11 @@ class ConfigTest extends TestCase
     /**
      * @covers Config::__construct()
      * @covers Config::loadFromFile()
-     * @covers Config::getParser()
      * @covers Config::getPathFromArray()
      * @covers Config::getValidPath()
      * @covers Config::__toString()
      */
-    public function testConstructWithYml()
+    public function testConstructWithYml(): void
     {
         $filename = __DIR__ . '/mocks/pass/config.yml';
         $config = new Config($filename);
@@ -198,11 +200,10 @@ class ConfigTest extends TestCase
     /**
      * @covers Config::__construct()
      * @covers Config::loadFromFile()
-     * @covers Config::getParser()
      * @covers Config::getPathFromArray()
      * @covers Config::getValidPath()
      */
-    public function testConstructWithYmlDist()
+    public function testConstructWithYmlDist(): void
     {
         $config = new Config(__DIR__ . '/mocks/pass/config.yml.dist');
 
@@ -215,11 +216,10 @@ class ConfigTest extends TestCase
     /**
      * @covers Config::__construct()
      * @covers Config::loadFromFile()
-     * @covers Config::getParser()
      * @covers Config::getPathFromArray()
      * @covers Config::getValidPath()
      */
-    public function testConstructWithEmptyYml()
+    public function testConstructWithEmptyYml(): void
     {
         $config = new Config(__DIR__ . '/mocks/pass/empty.yaml');
 

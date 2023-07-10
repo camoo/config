@@ -6,7 +6,6 @@ namespace Camoo\Config;
 
 use Camoo\Config\Command\LoadFromFileCommand;
 use Camoo\Config\Command\LoadFromFileCommandHandler;
-use Camoo\Config\Enum\Parser;
 use Camoo\Config\Enum\Writer;
 use Camoo\Config\Exception\EmptyDirectoryException;
 use Camoo\Config\Exception\FileNotFoundException;
@@ -43,8 +42,6 @@ class Config extends AbstractConfig implements Stringable
      *
      * @param string|array                                $values Filenames or string with configuration
      * @param ParserInterface|ParserFactoryInterface|null $parser Configuration parser
-     *
-     * @throws ParseException
      */
     public function __construct(
         private readonly array|string $values,
@@ -135,28 +132,6 @@ class Config extends AbstractConfig implements Stringable
         }
 
         return $writer->toString($this->all(), $pretty);
-    }
-
-    /**
-     * Gets a parser for a given file extension.
-     *
-     * @throws UnsupportedFormatException If `$extension` is an unsupported file format
-     */
-    protected function getParser(string $extension): ParserInterface
-    {
-        foreach (Parser::cases() as $parser) {
-            if (strtoupper($extension) !== $parser->name) {
-                continue;
-            }
-
-            $instance = $parser->getInstance();
-            if (in_array($parser, $instance->getSupportedExtensions(), true)) {
-                return $instance;
-            }
-        }
-
-        // If none exist, then throw an exception
-        throw new UnsupportedFormatException('Unsupported configuration format');
     }
 
     /**

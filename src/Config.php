@@ -11,7 +11,9 @@ use Camoo\Config\Exception\FileNotFoundException;
 use Camoo\Config\Exception\ParseException;
 use Camoo\Config\Exception\UnsupportedFormatException;
 use Camoo\Config\Exception\WriteException;
+use Camoo\Config\Parser\ParserFactoryInterface;
 use Camoo\Config\Parser\ParserInterface;
+use Camoo\Config\Writer\WriterFactoryInterface;
 use Camoo\Config\Writer\WriterInterface;
 use DirectoryIterator;
 use SplFileInfo;
@@ -38,14 +40,14 @@ class Config extends AbstractConfig implements Stringable
     /**
      * Loads a Config instance.
      *
-     * @param string|array         $values Filenames or string with configuration
-     * @param ParserInterface|null $parser Configuration parser
+     * @param string|array                                $values Filenames or string with configuration
+     * @param ParserInterface|ParserFactoryInterface|null $parser Configuration parser
      *
      * @throws ParseException
      */
     public function __construct(
         private readonly array|string $values,
-        ?ParserInterface $parser = null,
+        ParserInterface|ParserFactoryInterface|null $parser = null,
         private readonly bool $isString = false
     ) {
         $this->initialize($values, $parser, $isString);
@@ -70,26 +72,33 @@ class Config extends AbstractConfig implements Stringable
     /**
      * Static method for loading a Config instance.
      *
-     * @param string|array         $values Filenames or string with configuration
-     * @param ParserInterface|null $parser Configuration parser
+     * @param string|array                                $values Filenames or string with configuration
+     * @param ParserInterface|ParserFactoryInterface|null $parser Configuration parser
      *
      * @throws ParseException
      */
-    public static function load(array|string $values, ?ParserInterface $parser = null, bool $isString = false): self
-    {
+    public static function load(
+        array|string $values,
+        ParserInterface|ParserFactoryInterface|null $parser = null,
+        bool $isString = false
+    ): self {
         return new self($values, $parser, $isString);
     }
 
     /**
      * Writes configuration to file.
      *
-     * @param string               $filename Filename to save configuration to
-     * @param WriterInterface|null $writer   Configuration writer
+     * @param string                                      $filename Filename to save configuration to
+     * @param WriterInterface|WriterFactoryInterface|null $writer   Configuration writer
      *
      * @throws WriteException if the data could not be written to the file
      */
-    public function toFile(string $filename, ?WriterInterface $writer = null): void
+    public function toFile(string $filename, WriterInterface|WriterFactoryInterface|null $writer = null): void
     {
+        if ($writer instanceof WriterFactoryInterface) {
+            $writer = $writer->getInstance();
+        }
+
         if ($writer instanceof WriterInterface) {
             $writer->toFile($this->all(), $filename);
 
@@ -113,13 +122,17 @@ class Config extends AbstractConfig implements Stringable
     /**
      * Writes configuration to string.
      *
-     * @param WriterInterface $writer Configuration writer
-     * @param bool            $pretty Encode pretty
+     * @param WriterInterface|WriterFactoryInterface $writer Configuration writer
+     * @param bool                                   $pretty Encode pretty
      *
      * @throws Throwable
      */
-    public function toString(WriterInterface $writer, bool $pretty = true): string
+    public function toString(WriterInterface|WriterFactoryInterface $writer, bool $pretty = true): string
     {
+        if ($writer instanceof WriterFactoryInterface) {
+            $writer = $writer->getInstance();
+        }
+
         return $writer->toString($this->all(), $pretty);
     }
 
@@ -227,8 +240,15 @@ class Config extends AbstractConfig implements Stringable
     }
 
     /** @throws ParseException */
-    private function initialize(array|string $values, ?ParserInterface $parser = null, bool $isString = false): void
-    {
+    private function initialize(
+        array|string $values,
+        ParserInterface|ParserFactoryInterface|null $parser = null,
+        bool $isString = false
+    ): void {
+        if ($parser instanceof ParserFactoryInterface) {
+            $parser = $parser->getInstance();
+        }
+
         if ($isString === true) {
             $this->loadFromString($parser, $values);
 

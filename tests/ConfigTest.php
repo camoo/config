@@ -3,10 +3,13 @@
 namespace Camoo\Config\Test;
 
 use Camoo\Config\Config;
+use Camoo\Config\Enum\Parser;
+use Camoo\Config\Enum\Writer;
 use Camoo\Config\Exception\EmptyDirectoryException;
 use Camoo\Config\Exception\UnsupportedFormatException;
 use Camoo\Config\Parser\Json as JsonParser;
 use Camoo\Config\Parser\Php;
+use Camoo\Config\Writer\Json;
 use Camoo\Config\Writer\Json as JsonWriter;
 use PHPUnit\Framework\TestCase;
 
@@ -234,7 +237,7 @@ class ConfigTest extends TestCase
      */
     public function testConstructWithFileParser()
     {
-        $config = new Config(__DIR__ . '/mocks/pass/json.config', new JsonParser());
+        $config = new Config(__DIR__ . '/mocks/pass/json.config', Parser::JSON);
 
         $expected = 'localhost';
         $actual = $config->get('host');
@@ -268,23 +271,6 @@ class ConfigTest extends TestCase
         $this->assertCount(4, $config->get('servers'));
     }
 
-    /**
-     * @covers Config::toFile()
-     * @covers Config::getWriter()
-     * @covers Config::__toString()
-     */
-    public function testWritesToFile()
-    {
-        $content = json_encode(['foo' => 'bar']);
-        $config = new Config($content, new JsonParser(), true);
-        $filename = tempnam(sys_get_temp_dir(), 'config') . '.json';
-
-        $config->toFile($filename);
-
-        $this->assertSame($content, $config->__toString());
-        $this->assertFileExists($filename);
-    }
-
     /** @covers Config::toString() */
     public function testWritesToString()
     {
@@ -293,6 +279,44 @@ class ConfigTest extends TestCase
         $string = $config->toString(new JsonWriter());
 
         $this->assertNotEmpty($string);
+    }
+
+    /** @covers Config::toString */
+    public function testWritesToStringWithFactory()
+    {
+        $config = new Config(json_encode(['foo' => 'bar']), Parser::JSON, true);
+
+        $string = $config->toString(Writer::JSON);
+
+        $this->assertNotEmpty($string);
+    }
+
+    /**
+     * @covers Config::toFile()
+     * @covers Config::getWriter()
+     * @covers Config::__toString()
+     *
+     * @dataProvider provideWriterInstance
+     */
+    public function testWritesToFile(mixed $writer): void
+    {
+        $content = json_encode(['foo' => 'bar']);
+        $config = new Config($content, new JsonParser(), true);
+        $filename = tempnam(sys_get_temp_dir(), 'config') . '.json';
+
+        $config->toFile($filename, $writer);
+
+        $this->assertSame($content, $config->__toString());
+        $this->assertFileExists($filename);
+    }
+
+    public function provideWriterInstance(): array
+    {
+        return [
+            [null],
+            [Writer::JSON],
+            [new Json()],
+        ];
     }
 
     /** Provides names of example configuration files */

@@ -55,11 +55,9 @@ class Ini implements ParserInterface
     /**
      * Completes parsing of INI data
      *
-     * @param array|bool|null $data
-     *
      * @throws ParseException If there is an error parsing the INI data
      */
-    protected function parse(array|bool|null $data = null, ?string $filename = null): array
+    protected function parse(array|bool $data, ?string $filename = null): array
     {
         if (!$data) {
             $error = error_get_last();

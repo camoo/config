@@ -6,6 +6,7 @@ namespace Camoo\Config\Writer;
 
 use Camoo\Config\Enum\Writer;
 use DOMDocument;
+use Exception;
 use SimpleXMLElement;
 
 /**
@@ -22,10 +23,7 @@ use SimpleXMLElement;
  */
 class Xml extends AbstractWriter
 {
-    /**
-     * {@inheritdoc}
-     * Writes an array to a Xml string.
-     */
+    /** {@inheritdoc} */
     public function toString(array $config, bool $pretty = true): string
     {
         $xml = $this->toXML($config);
@@ -50,15 +48,17 @@ class Xml extends AbstractWriter
     /**
      * Converts array to XML string.
      *
-     * @param array            $arr         Array to be converted
-     * @param string           $rootElement I specified will be taken as root element
-     * @param SimpleXMLElement $xml         If specified content will be appended
+     * @param array                 $arr         Array to be converted
+     * @param string                $rootElement I specified will be taken as root element
+     * @param SimpleXMLElement|null $xml         If specified content will be appended
      *
-     * @return string Converted array as XML
+     * @throws Exception
+     *
+     * @return string|bool Converted array as XML
      *
      * @see https://www.kerstner.at/2011/12/php-array-to-xml-conversion/
      */
-    protected function toXML(array $arr, string $rootElement = '<config/>', ?SimpleXMLElement $xml = null)
+    protected function toXML(array $arr, string $rootElement = '<config/>', ?SimpleXMLElement $xml = null): string|bool
     {
         if ($xml === null) {
             $xml = new SimpleXMLElement($rootElement);

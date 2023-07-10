@@ -177,15 +177,19 @@ class ConfigTest extends TestCase
      * @covers Config::getParser()
      * @covers Config::getPathFromArray()
      * @covers Config::getValidPath()
+     * @covers Config::__toString()
      */
     public function testConstructWithYml()
     {
-        $config = new Config(__DIR__ . '/mocks/pass/config.yml');
+        $filename = __DIR__ . '/mocks/pass/config.yml';
+        $config = new Config($filename);
 
         $expected = 'localhost';
         $actual = $config->get('host');
 
         $this->assertSame($expected, $actual);
+
+        $this->assertSame('1. ' . $filename . PHP_EOL . file_get_contents($filename) . PHP_EOL, $config->__toString());
     }
 
     /**
@@ -267,14 +271,17 @@ class ConfigTest extends TestCase
     /**
      * @covers Config::toFile()
      * @covers Config::getWriter()
+     * @covers Config::__toString()
      */
     public function testWritesToFile()
     {
-        $config = new Config(json_encode(['foo' => 'bar']), new JsonParser(), true);
+        $content = json_encode(['foo' => 'bar']);
+        $config = new Config($content, new JsonParser(), true);
         $filename = tempnam(sys_get_temp_dir(), 'config') . '.json';
 
         $config->toFile($filename);
 
+        $this->assertSame($content, $config->__toString());
         $this->assertFileExists($filename);
     }
 

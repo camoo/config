@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Camoo\Config\Writer;
 
 use Camoo\Config\Exception\WriteException;
+use Exception;
 
 /**
  * Config file parser interface.
@@ -27,7 +28,11 @@ interface WriterInterface
      */
     public function toFile(array $config, string $filename): string;
 
-    /** Writes a configuration from `$config` to a string. */
+    /**
+     * Writes a configuration from `$config` to a string.
+     *
+     * @throws Exception
+     */
     public function toString(array $config, bool $pretty = true): string;
 
     /** Returns an array of allowed file extensions for this writer. */

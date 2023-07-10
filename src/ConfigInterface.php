@@ -18,12 +18,11 @@ interface ConfigInterface
 {
     /**
      * Gets a configuration setting using a simple or nested key.
-     * Nested keys are similar to JSON paths that use the dot
-     * dot notation.
+     * Nested keys are similar to JSON paths that use the dot notation
      *
      * @param mixed $default
      */
-    public function get(string $key, mixed $default = null);
+    public function get(string $key, mixed $default = null): mixed;
 
     /**
      * Function for setting configuration values, using
@@ -37,6 +36,6 @@ interface ConfigInterface
      */
     public function has(string $key): bool;
 
-    /** Get all of the configuration items */
+    /** Get all the configuration items */
     public function all(): array;
 }

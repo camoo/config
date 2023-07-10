@@ -50,7 +50,7 @@ class Ini extends AbstractWriter
 
         foreach ($arr as $k => $v) {
             if (is_array($v)) {
-                $sec = array_merge((array)$parent, (array)$k);
+                $sec = array_merge($parent, (array)$k);
                 $converted .= '[' . implode('.', $sec) . ']' . PHP_EOL;
                 $converted .= $this->toINI($v, $sec);
             } else {

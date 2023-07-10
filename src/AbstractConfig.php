@@ -20,7 +20,7 @@ use Iterator;
 abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
 {
     /** Stores the configuration data */
-    protected array $data;
+    protected array $data = [];
 
     /** Caches the configuration data */
     protected array $cache = [];
@@ -36,7 +36,7 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
      */
 
     /** {@inheritDoc} */
-    public function get(string $key, mixed $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         if ($this->has($key)) {
             return $this->cache[$key];
@@ -48,17 +48,17 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
     /** {@inheritDoc} */
     public function set(string $key, mixed $value): void
     {
-        $segs = explode('.', $key);
+        $segments = explode('.', $key);
         $root = &$this->data;
         $cacheKey = '';
 
         // Look for the key, creating nested keys if needed
-        while ($part = array_shift($segs)) {
+        while ($part = array_shift($segments)) {
             if ($cacheKey != '') {
                 $cacheKey .= '.';
             }
             $cacheKey .= $part;
-            if (!isset($root[$part]) && count($segs)) {
+            if (!isset($root[$part]) && count($segments)) {
                 $root[$part] = [];
             }
             $root = &$root[$part];
@@ -69,7 +69,7 @@ abstract class AbstractConfig implements ArrayAccess, ConfigInterface, Iterator
             }
 
             //Unset all old nested cache in case of array
-            if (count($segs) == 0) {
+            if (count($segments) == 0) {
                 foreach ($this->cache as $cacheLocalKey => $cacheValue) {
                     if (str_starts_with($cacheLocalKey, $cacheKey)) {
                         unset($this->cache[$cacheLocalKey]);

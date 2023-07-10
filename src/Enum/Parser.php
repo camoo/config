@@ -14,6 +14,13 @@ use Camoo\Config\Parser\Serialize;
 use Camoo\Config\Parser\Xml;
 use Camoo\Config\Parser\Yaml;
 
+/**
+ * @author     Camoo Sarl <config@camoo.sarl>
+ *
+ * @link       https://github.com/camoo/config
+ *
+ * @license    MIT
+ */
 enum Parser implements ParserFactoryInterface
 {
     public function getInstance(): ParserInterface

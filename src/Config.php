@@ -26,6 +26,7 @@ use Throwable;
  * @author     Jesus A. Domingo <jesus.domingo@gmail.com>
  * @author     Hassan Khan <contact@hassankhan.me>
  * @author     Filip Š <projects@filips.si>
+ * @author     Camoo Sarl <config@camoo.sarl>
  *
  * @link       https://github.com/noodlehaus/config
  *

@@ -12,6 +12,13 @@ use Camoo\Config\Parser\ParserInterface;
 use DirectoryIterator;
 use SplFileInfo;
 
+/**
+ * @author     Camoo Sarl <config@camoo.sarl>
+ *
+ * @link       https://github.com/camoo/config
+ *
+ * @license    MIT
+ */
 final class LoadFromFileCommandHandler
 {
     private const DIST_EXTENSION = 'dist';

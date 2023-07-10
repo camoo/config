@@ -3,6 +3,7 @@
 namespace Camoo\Config\Test\Parser;
 
 use Camoo\Config\Enum\Parser;
+use Camoo\Config\Exception\ParseException;
 use Camoo\Config\Parser\Xml;
 use PHPUnit\Framework\TestCase;
 
@@ -11,8 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 class XmlTest extends TestCase
 {
-    /** @var Xml */
-    protected $xml;
+    protected ?Xml $xml;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -20,7 +20,14 @@ class XmlTest extends TestCase
      */
     protected function setUp(): void
     {
+        parent::setUp();
         $this->xml = new Xml();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->xml = null;
     }
 
     /** @covers \Camoo\Config\Parser\Xml::getSupportedExtensions() */
@@ -37,7 +44,7 @@ class XmlTest extends TestCase
      */
     public function testLoadInvalidXml()
     {
-        $this->expectException(\Camoo\Config\Exception\ParseException::class);
+        $this->expectException(ParseException::class);
         $this->expectExceptionMessage('Opening and ending tag mismatch: name line 4');
         $this->xml->parseFile(__DIR__ . '/../mocks/fail/error.xml');
     }

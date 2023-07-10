@@ -60,11 +60,7 @@ class Json implements ParserInterface
     protected function parse(?array $data = null, ?string $filename = null): ?array
     {
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $errorMessage = 'Syntax error';
-            if (function_exists('json_last_error_msg')) {
-                $errorMessage = json_last_error_msg();
-            }
-
+            $errorMessage = json_last_error_msg();
             $error = [
                 'message' => $errorMessage,
                 'type' => json_last_error(),

@@ -14,9 +14,9 @@ class ParseException extends ErrorException
         $code = $error['code'] ?? 0;
         $severity = $error['type'] ?? 1;
         $filename = $error['file'] ?? __FILE__;
-        $lineno = $error['line'] ?? __LINE__;
+        $errorLine = $error['line'] ?? __LINE__;
         $exception = $error['exception'] ?? null;
 
-        parent::__construct($message, $code, $severity, $filename, $lineno, $exception);
+        parent::__construct($message, $code, $severity, $filename, $errorLine, $exception);
     }
 }

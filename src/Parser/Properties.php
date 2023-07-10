@@ -52,7 +52,7 @@ class Properties implements ParserInterface
         $txtProperties = preg_replace('/(?<!\\\\)\\\\[\r\n\t\f\v][ \r]*/', '', $txtProperties);
 
         // next split all lines not starting with # or ! on characters = or : (unless escaped):
-        preg_match_all('/^([^#!].*)(?<!\\\\)[=:](.*)$/mU', $txtProperties, $matches, PREG_SET_ORDER, 0);
+        preg_match_all('/^([^#!].*)(?<!\\\\)[=:](.*)$/mU', $txtProperties, $matches, PREG_SET_ORDER);
 
         foreach ($matches as $match) {
             $result[trim(stripslashes($match[1]))] = trim(stripslashes($match[2]));

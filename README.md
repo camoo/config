@@ -38,7 +38,7 @@ by direct instantiation:
 
 ```php
 use Camoo\Config\Config;
-use Camoo\Config\Parser\Json;
+use Camoo\Config\Enum\Parser;
 
 // Load a single file
 $conf = Config::load('config.json');
@@ -54,7 +54,7 @@ $conf = new Config(__DIR__ . '/config');
 $conf = new Config(['config.dist.json', '?config.json']);
 
 // Load a file using specified parser
-$conf = new Config('configuration.config', new Json);
+$conf = new Config('configuration.config', Parser::JSON);
 ```
 
 Files are parsed and loaded depending on the file extension or specified
@@ -75,6 +75,7 @@ by direct instantiation, with argument `$string` set to `true`:
 
 ```php
 use Camoo\Config\Config;
+use Camoo\Config\Enum\Parser;
 use Camoo\Config\Parser\Json;
 use Camoo\Config\Parser\Yaml;
 
@@ -107,8 +108,8 @@ servers:
 
 FOOBAR;
 
-$conf = Config::load($settingsJson, new Json, true);
-$conf = new Config($settingsYaml, new Yaml, true);
+$conf = Config::load($settingsJson, Parser::JSON, true);
+$conf = new Config($settingsYaml, Parser::YAML, true);
 ```
 
 **Warning:** Do not include untrusted configuration in PHP format. It could
@@ -181,12 +182,14 @@ It is possible to save the config back to a file in any of the supported formats
 except PHP.
 
 ```php
+use use Camoo\Config\Enum\Writer;
+
 $config = Config::load('config.json');
 
-$ini = $config->toString(new Ini()); // Encode to string if you want to save the file yourself
+$ini = $config->toString(Writer::INI); // Encode to string if you want to save the file yourself
 
 $config->toFile('config.yaml');
-$config->toFile('config.txt', new Serialize()); // you can also force the writer
+$config->toFile('config.txt', Writer::SERIALIZE); // you can also force the writer
 ```
 
 ### Using with default values

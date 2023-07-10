@@ -135,27 +135,6 @@ class Config extends AbstractConfig implements Stringable
     }
 
     /**
-     * Gets a writer for a given file extension.
-     *
-     * @throws UnsupportedFormatException If `$extension` is an unsupported file format
-     */
-    protected function getWriter(string $extension): WriterInterface
-    {
-        foreach (Writer::cases() as $writer) {
-            if (strtoupper($extension) !== $writer->name) {
-                continue;
-            }
-            $instance = $writer->getInstance();
-            if (in_array($writer, $instance->getSupportedExtensions(), true)) {
-                return $instance;
-            }
-        }
-
-        // If none exist, then throw an exception
-        throw new UnsupportedFormatException('Unsupported configuration format' . $extension);
-    }
-
-    /**
      * Gets an array of paths
      *
      * @throws FileNotFoundException If a file is not found at `$path`
@@ -213,6 +192,27 @@ class Config extends AbstractConfig implements Stringable
         $path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
         return new DirectoryIterator($path);
+    }
+
+    /**
+     * Gets a writer for a given file extension.
+     *
+     * @throws UnsupportedFormatException If `$extension` is an unsupported file format
+     */
+    private function getWriter(string $extension): WriterInterface
+    {
+        foreach (Writer::cases() as $writer) {
+            if (strtoupper($extension) !== $writer->name) {
+                continue;
+            }
+            $instance = $writer->getInstance();
+            if (in_array($writer, $instance->getSupportedExtensions(), true)) {
+                return $instance;
+            }
+        }
+
+        // If none exist, then throw an exception
+        throw new UnsupportedFormatException('Unsupported configuration format: .' . $extension);
     }
 
     /** @throws ParseException */

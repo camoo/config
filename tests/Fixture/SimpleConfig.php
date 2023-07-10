@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Camoo\Config\Test\Fixture;
 
 use Camoo\Config\AbstractConfig;

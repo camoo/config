@@ -36,7 +36,7 @@ class Config extends AbstractConfig implements Stringable
 {
     private const DIST_EXTENSION = 'dist';
 
-    private array $files;
+    private array $files = [];
 
     /**
      * Loads a Config instance.
